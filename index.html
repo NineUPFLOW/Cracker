@@ -149,21 +149,23 @@
         <p class="subtitle">Выберите игру из списка ниже</p>
         
         <div class="games-grid">
-            <div class="game-btn" onclick="openGame('game1')">
+            <a href="game1/index.html" class="game-btn">
                 <div class="game-icon">🐍</div>
                 <div class="game-info">
-                    <div class="game-title">Игра 1</div>
-                    <div class="game-description">Увлекательная аркадная игра с простым управлением</div>
+                    <div class="game-title">Змейка</div>
+                    <div class="game-description">Классика  с простым управлением</div>
                 </div>
-            </div>
+            </a>
             
-            <div class="game-btn" onclick="openGame('game2')">
+            <a href="game2/index.html" class="game-btn">
                 <div class="game-icon">💻</div>
                 <div class="game-info">
-                    <div class="game-title">Игра 2</div>
+                    <div class="game-title">Neon hack pro</div>
                     <div class="game-description">Стратегическая головоломка для развития логики</div>
                 </div>
-            </div>
+            </a>
+        
+        </div>
 
         <div class="instructions">
             <h3>📋 Как играть?</h3>
@@ -172,46 +174,12 @@
     </div>
 
     <script>
-        function openGame(gameName) {
-            // Сохраняем информацию о выбранной игре
-            localStorage.setItem('lastSelectedGame', gameName);
-            localStorage.setItem('menuTimestamp', Date.now());
-            
-            // Перенаправляем на выбранную игру
-            switch(gameName) {
-                case 'game1':
-                    window.location.href = 'game1/index.html';
-                    break;
-                case 'game2':
-                    window.location.href = 'game2/index.html';
-                    break;
-                case 'game3':
-                    window.location.href = 'game3/index.html';
-                    break;
-                default:
-                    alert('Игра "' + gameName + '" не найдена!');
-            }
-        }
+        // Сохраняем информацию о посещении меню
+        localStorage.setItem('menuVisited', 'true');
+        localStorage.setItem('menuLastVisit', Date.now());
 
-        // Проверяем, есть ли сохраненная игра для быстрого возврата
-        function checkReturningUser() {
-            const lastGame = localStorage.getItem('lastSelectedGame');
-            const timestamp = localStorage.getItem('menuTimestamp');
-            
-            if (lastGame && timestamp) {
-                const timeDiff = Date.now() - parseInt(timestamp);
-                // Если пользователь вернулся в течение 1 часа
-                if (timeDiff < 3600000) {
-                    console.log('Возвращающийся пользователь, последняя игра:', lastGame);
-                }
-            }
-        }
-
-        // Инициализация при загрузке
+        // Для Telegram WebApp
         document.addEventListener('DOMContentLoaded', function() {
-            checkReturningUser();
-            
-            // Для Telegram WebApp
             if (window.Telegram && window.Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
