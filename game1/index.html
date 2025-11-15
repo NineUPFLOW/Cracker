@@ -1,570 +1,2008 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Змейка</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: #0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      user-select: none;
-      overflow: hidden;
-    }
-    h1 { margin-bottom: 10px; font-size: 2rem; }
-    #score { margin-bottom: 15px; font-size: 1.2rem; }
-    canvas {
-      border: 3px solid #0f0;
-      image-rendering: pixelated;
-      background: #000;
-      display: none;
-    }
-    .controls {
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      grid-template-rows: repeat(3, 60px);
-      gap: 10px;
-      display: none;
-    }
-    .btn {
-      background: #222;
-      border: 2px solid #0f0;
-      color: #0f0;
-      font-size: 1.5rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .btn:active { background: #0f0; color: #000; }
-    .btn.empty { background: transparent; border: none; cursor: default; }
-    #restart {
-      margin-top: 20px;
-      padding: 12px 24px;
-      background: #0f0;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 1rem;
-      display: none;
-    }
-    #restart:hover { background: #0c0; }
-    
-    /* Стили для меню */
-    #menu {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px solid #0f0;
-      text-align: center;
-      width: 350px;
-    }
-    #menu h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-    #menu p {
-      margin: 15px 0;
-      font-size: 1.2rem;
-    }
-    .menu-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #0f0;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      transition: all 0.2s;
-    }
-    .menu-btn:hover {
-      background: #0c0;
-    }
-    
-    /* Стили для выбора сложности */
-    .difficulty-selector {
-      margin: 20px 0;
-      text-align: left;
-    }
-    .difficulty-selector h3 {
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .difficulty-option {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .difficulty-option:hover {
-      background: rgba(0, 255, 0, 0.1);
-    }
-    .difficulty-option input {
-      margin-right: 10px;
-    }
-    .difficulty-option label {
-      flex: 1;
-      cursor: pointer;
-    }
-    .difficulty-description {
-      font-size: 0.9rem;
-      color: #0c0;
-      margin-left: 10px;
-    }
-    
-    /* Стили для окна окончания игры */
-    #game-over {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px solid #0f0;
-      text-align: center;
-      width: 300px;
-      display: none;
-    }
-    #game-over h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-    #game-over p {
-      margin: 15px 0;
-      font-size: 1.2rem;
-    }
-    
-    /* Индикатор сложности в игре */
-    #difficulty-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 5px 10px;
-      border-radius: 5px;
-      border: 1px solid #0f0;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonHack Pro // Киберпространство</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-green: #00ff41;
+            --neon-blue: #00ffff;
+            --neon-pink: #ff00ff;
+            --neon-purple: #9d00ff;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --terminal-bg: rgba(5, 20, 5, 0.95);
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            padding-top: 50px; /* Отступ для кнопки закрытия Telegram */
+        }
+
+        /* Эффект сканирующей линии */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            animation: scan 4s linear infinite;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0.7; }
+        }
+
+        /* Шум */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 255, 65, 0.02),
+                    rgba(0, 255, 65, 0.02) 1px,
+                    transparent 1px,
+                    transparent 2px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(0, 255, 255, 0.01),
+                    rgba(0, 255, 255, 0.01) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+            pointer-events: none;
+            z-index: 1001;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 50px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--neon-green);
+            padding-bottom: 15px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2.8em;
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green), 0 0 40px var(--neon-green);
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: var(--neon-blue);
+            font-size: 1.1em;
+            text-shadow: 0 0 10px var(--neon-blue);
+            letter-spacing: 1px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--neon-purple);
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            background: rgba(10, 20, 30, 0.7);
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .tab.active {
+            background: var(--terminal-bg);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            transform: translateY(2px);
+        }
+
+        .tab:hover:not(.active) {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .terminal {
+            background: var(--terminal-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2),
+                        inset 0 0 20px rgba(0, 255, 65, 0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+            animation: scanTerminal 3s linear infinite;
+        }
+
+        @keyframes scanTerminal {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            min-height: 200px;
+            max-height: 300px;
+            padding: 10px;
+            background: rgba(0, 10, 5, 0.5);
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+            animation: typeLine 0.1s ease-out;
+        }
+
+        @keyframes typeLine {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 15, 5, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--neon-green);
+        }
+
+        .prompt {
+            color: var(--neon-green);
+            margin-right: 10px;
+            white-space: nowrap;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            outline: none;
+            flex: 1;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: linear-gradient(135deg, rgba(0, 40, 20, 0.7), rgba(0, 20, 40, 0.7));
+            border: 1px solid var(--neon-blue);
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            color: var(--neon-green);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--neon-green);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .missions-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .mission {
+            background: linear-gradient(135deg, rgba(0, 30, 15, 0.6), rgba(0, 15, 30, 0.6));
+            border: 1px solid var(--neon-purple);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(157, 0, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .mission:hover::before {
+            opacity: 1;
+        }
+
+        .mission:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mission-title {
+            color: var(--neon-green);
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .mission-desc {
+            color: var(--neon-blue);
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .mission-reward {
+            color: var(--neon-green);
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .mission-energy {
+            color: #ff5555;
+            font-size: 0.8em;
+        }
+
+        .mission-cooldown {
+            color: #ffaa00;
+            font-size: 0.8em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .shop-item {
+            background: linear-gradient(135deg, rgba(0, 30, 15, 0.6), rgba(0, 15, 30, 0.6));
+            border: 1px solid var(--neon-blue);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-item:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .shop-item-title {
+            color: var(--neon-green);
+            font-size: 1em;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        .shop-item-desc {
+            color: var(--neon-blue);
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .shop-item-price {
+            color: #ffff00;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-shadow: 0 0 5px #ffff00;
+        }
+
+        .minigame {
+            text-align: center;
+            padding: 20px;
+            background: var(--terminal-bg);
+            border: 2px solid var(--neon-purple);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(157, 0, 255, 0.2);
+        }
+
+        .hack-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 10, 20, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--neon-blue);
+        }
+
+        .hack-cell {
+            background: #001122;
+            border: 1px solid #003366;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hack-cell::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .hack-cell:hover::before {
+            opacity: 1;
+        }
+
+        .hack-cell.active {
+            background: #002244;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .hack-cell.target {
+            background: #220000;
+            border-color: #ff0000;
+        }
+
+        .hack-cell.found {
+            background: #002200;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .hack-cell.failed {
+            background: #330000;
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .button {
+            background: linear-gradient(135deg, rgba(0, 40, 20, 0.8), rgba(0, 20, 40, 0.8));
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9em;
+            margin: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px var(--neon-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        .button:hover {
+            background: linear-gradient(135deg, rgba(0, 60, 30, 0.9), rgba(0, 30, 60, 0.9));
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #666;
+            color: #666;
+        }
+
+        .button:disabled:hover {
+            background: linear-gradient(135deg, rgba(0, 40, 20, 0.8), rgba(0, 20, 40, 0.8));
+            border-color: #666;
+            color: #666;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--neon-pink);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--neon-blue);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(37px, 9999px, 20px, 0); }
+            100% { clip: rect(4px, 9999px, 91px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+
+        .hacking-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 10, 5, 0.98);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+        }
+
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            color: var(--neon-green);
+            pointer-events: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--terminal-bg);
+            border: 2px solid var(--neon-green);
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 3000;
+            max-width: 350px;
+            display: none;
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
+            font-family: 'Orbitron', sans-serif;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .upgrade-item {
+            background: linear-gradient(135deg, rgba(0, 30, 15, 0.6), rgba(0, 15, 30, 0.6));
+            border: 1px solid var(--neon-purple);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .upgrade-item:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+
+        .upgrade-info {
+            flex: 1;
+        }
+
+        .upgrade-name {
+            color: var(--neon-green);
+            font-size: 1em;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px var(--neon-green);
+            margin-bottom: 5px;
+        }
+
+        .upgrade-desc {
+            color: var(--neon-blue);
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .upgrade-level {
+            color: #ffff00;
+            font-size: 0.9em;
+            margin-right: 15px;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 5px #ffff00;
+        }
+
+        .upgrade-effect {
+            color: var(--neon-green);
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        /* Стили для скроллбара */
+        .missions-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .missions-container::-webkit-scrollbar-track {
+            background: rgba(0, 20, 10, 0.5);
+            border-radius: 5px;
+        }
+
+        .missions-container::-webkit-scrollbar-thumb {
+            background: var(--neon-green);
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: rgba(0, 15, 5, 0.5);
+            border-radius: 4px;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--neon-blue);
+        }
+
+        /* Анимации для терминала */
+        .typing-animation {
+            overflow: hidden;
+            border-right: 2px solid var(--neon-green);
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-green) }
+        }
+
+        .crypto-value {
+            font-family: 'Orbitron', sans-serif;
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .difficulty-indicator {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .difficulty-easy { background: #00aa00; color: white; }
+        .difficulty-medium { background: #ffaa00; color: black; }
+        .difficulty-hard { background: #ff4400; color: white; }
+        .difficulty-expert { background: #aa0000; color: white; }
+        .difficulty-master { background: #6600aa; color: white; }
+
+        .hack-timer {
+            font-size: 1.2em;
+            color: #ff4444;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px #ff4444;
+            margin: 10px 0;
+        }
+
+        .complex-hack {
+            background: var(--terminal-bg);
+            border: 2px solid var(--neon-purple);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .code-line {
+            font-family: 'Share Tech Mono', monospace;
+            margin: 5px 0;
+            padding: 5px;
+            background: rgba(0, 10, 20, 0.5);
+            border-radius: 3px;
+        }
+
+        .code-input {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 5px;
+            width: 100%;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-  <h1>Змейка</h1>
-  <div id="score">Счёт: 0</div>
-  <div id="difficulty-indicator">Сложность: Легкая</div>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="scan-line"></div>
+    <div class="noise"></div>
 
-  <div class="controls">
-    <div class="btn empty"></div>
-    <button class="btn" id="up">↑</button>
-    <div class="btn empty"></div>
+    <div class="container">
+        <div class="header">
+            <h1 class="title glitch" data-text="NEON_HACK_PRO">NEON_HACK_PRO</h1>
+            <div class="subtitle">// Киберпространство v4.0</div>
+        </div>
 
-    <button class="btn" id="left">←</button>
-    <div class="btn empty"></div>
-    <button class="btn" id="right">→</button>
+        <div class="game-stats">
+            <div class="stat">
+                <div class="stat-value" id="credits">0.00000000₿</div>
+                <div class="stat-label">Крипто-Баланс</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="rep">0</div>
+                <div class="stat-label">Репутация</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="skill">Новичок</div>
+                <div class="stat-label">Уровень</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="energy">100</div>
+                <div class="stat-label">Энергия</div>
+            </div>
+        </div>
 
-    <div class="btn empty"></div>
-    <button class="btn" id="down">↓</button>
-    <div class="btn empty"></div>
-  </div>
+        <div class="tabs">
+            <div class="tab active" data-tab="terminal">Терминал</div>
+            <div class="tab" data-tab="missions">Миссии</div>
+            <div class="tab" data-tab="minigame">Взлом</div>
+            <div class="tab" data-tab="shop">Магазин</div>
+            <div class="tab" data-tab="upgrades">Улучшения</div>
+            <div class="tab" data-tab="offline">Оффлайн</div>
+        </div>
 
-  <button id="restart">🔄 Новая игра</button>
+        <div class="tab-content active" id="terminal-tab">
+            <div class="terminal">
+                <div class="terminal-output" id="output">
+                    <div class="terminal-line">> Инициализация системы...</div>
+                    <div class="terminal-line">> Загрузка нейроинтерфейса...</div>
+                    <div class="terminal-line">> Подключение к DarkNet...</div>
+                    <div class="terminal-line">> Добро пожаловать в Киберпространство, хакер.</div>
+                    <div class="terminal-line">> Система готова. Введите 'help' для списка команд.</div>
+                </div>
+                <div class="terminal-input">
+                    <span class="prompt">root@neonhack:~#</span>
+                    <input type="text" id="command-input" autocomplete="off" placeholder="Введите команду...">
+                </div>
+            </div>
+        </div>
 
-  <!-- Меню -->
-  <div id="menu">
-    <h2>Змейка</h2>
-    <p>Рекорд: <span id="high-score">0</span></p>
-    
-    <div class="difficulty-selector">
-      <h3>Выберите сложность:</h3>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="easy" name="difficulty" value="easy" checked>
-        <label for="easy">Легкая</label>
-        <span class="difficulty-description">Медленная скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="medium" name="difficulty" value="medium">
-        <label for="medium">Средняя</label>
-        <span class="difficulty-description">Нормальная скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="hard" name="difficulty" value="hard">
-        <label for="hard">Сложная</label>
-        <span class="difficulty-description">Высокая скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="expert" name="difficulty" value="expert">
-        <label for="expert">Эксперт</label>
-        <span class="difficulty-description">Очень высокая скорость</span>
-      </div>
+        <div class="tab-content" id="missions-tab">
+            <div class="missions-container" id="missions-list">
+                <!-- Миссии будут загружены динамически -->
+            </div>
+            <div style="text-align: center;">
+                <button class="button" id="daily-reward">Ежедневная награда</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="minigame-tab">
+            <div class="minigame">
+                <h3>СЛОЖНЫЙ ВЗЛОМ СИСТЕМЫ</h3>
+                <p>Найдите уязвимости в системе защиты. Время ограничено!</p>
+                
+                <div class="complex-hack">
+                    <div class="code-line">> Анализ системы защиты...</div>
+                    <div class="code-line">> Обнаружено 6 уровней безопасности</div>
+                    <div class="code-line">> Время на взлом: <span id="hack-timer">60</span> секунд</div>
+                </div>
+                
+                <div class="hack-grid" id="hack-grid">
+                    <!-- Ячейки для мини-игры будут созданы динамически -->
+                </div>
+                
+                <div id="minigame-stats">
+                    <p>Уровень сложности: <span id="minigame-level">1</span></p>
+                    <p>Целей найдено: <span id="targets-found">0</span>/<span id="targets-total">3</span></p>
+                    <p>Ошибок: <span id="mistakes-count">0</span>/3</p>
+                </div>
+                
+                <div class="complex-hack" id="code-hack" style="display: none;">
+                    <div class="code-line">> Обход фаервола... Введите код:</div>
+                    <div class="code-line">if (security_level > <span id="code-value">0</span>) { bypass(); }</div>
+                    <input type="number" class="code-input" id="code-input" placeholder="Введите число">
+                    <button class="button" onclick="checkCode()">Проверить код</button>
+                </div>
+                
+                <button class="button" id="start-minigame">Начать сложный взлом</button>
+                <button class="button" id="reset-minigame" style="display: none;">Сбросить</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="shop-tab">
+            <div class="shop-items" id="shop-items">
+                <!-- Товары магазина будут загружены динамически -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="upgrades-tab">
+            <div id="upgrades-list">
+                <!-- Улучшения будут загружены динамически -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="offline-tab">
+            <div class="terminal">
+                <h3>ОФФЛАЙН МАЙНИНГ</h3>
+                <p>Ваши боты работают в фоновом режиме и майнят криптовалюту</p>
+                
+                <div class="complex-hack">
+                    <div id="offline-stats">
+                        <p>Майнинг-ботов: <span class="crypto-value" id="bot-count">0</span></p>
+                        <p>Хешрейт: <span class="crypto-value" id="hash-rate">0</span> H/s</p>
+                        <p>Доход/час: <span class="crypto-value" id="offline-income">0.00000000</span>₿</p>
+                        <p>Последняя активность: <span id="last-online">-</span></p>
+                        <p>Заработано оффлайн: <span class="crypto-value" id="offline-earned">0.00000000</span>₿</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="button" id="buy-bot">Купить майнинг-бота (0.00100000₿)</button>
+                    <button class="button" id="upgrade-bot">Улучшить ботов (0.00500000₿)</button>
+                    <button class="button" id="buy-rig">Купить майнинг-риг (0.10000000₿)</button>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <button id="start-game" class="menu-btn">Начать игру</button>
-    <button id="view-rules" class="menu-btn">Правила игры</button>
-  </div>
 
-  <!-- Окно окончания игры -->
-  <div id="game-over">
-    <h2>Игра окончена!</h2>
-    <p id="final-score">Счёт: 0</p>
-    <p>Рекорд: <span id="final-high-score">0</span></p>
-    <p>Сложность: <span id="final-difficulty">Легкая</span></p>
-    <button id="play-again" class="menu-btn">Играть снова</button>
-    <button id="back-to-menu" class="menu-btn">Вернуться в меню</button>
-  </div>
+    <div class="hacking-animation" id="hacking-screen">
+        <div class="matrix-rain" id="matrix"></div>
+        <div style="position: relative; z-index: 2001; text-align: center;">
+            <h2 style="color: var(--neon-green); margin-bottom: 20px; text-shadow: 0 0 20px var(--neon-green);">СЛОЖНЫЙ ВЗЛОМ В ПРОЦЕССЕ...</h2>
+            <div id="hack-progress" style="color: var(--neon-green); font-size: 1.5em; font-family: 'Orbitron', sans-serif;">0%</div>
+            <div id="hack-status" style="color: var(--neon-blue); margin: 15px 0; font-size: 1.1em;"></div>
+            <button class="button" onclick="cancelHack()" style="margin-top: 20px;">ПРЕРВАТЬ ВЗЛОМ</button>
+        </div>
+    </div>
 
-  <script>
-    // Получаем элементы DOM
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreElement = document.getElementById('score');
-    const menuElement = document.getElementById('menu');
-    const gameOverElement = document.getElementById('game-over');
-    const finalScoreElement = document.getElementById('final-score');
-    const highScoreElement = document.getElementById('high-score');
-    const finalHighScoreElement = document.getElementById('final-high-score');
-    const finalDifficultyElement = document.getElementById('final-difficulty');
-    const difficultyIndicator = document.getElementById('difficulty-indicator');
-    const startGameButton = document.getElementById('start-game');
-    const playAgainButton = document.getElementById('play-again');
-    const backToMenuButton = document.getElementById('back-to-menu');
-    const viewRulesButton = document.getElementById('view-rules');
-    const restartButton = document.getElementById('restart');
+    <div class="notification" id="notification">
+        Уведомление системы
+    </div>
 
-    // Константы игры
-    const GRID_SIZE = 20;
-    const TILE_COUNT = canvas.width / GRID_SIZE;
-
-    // Настройки сложности
-    const DIFFICULTY_SETTINGS = {
-      easy: { speed: 150, name: "Легкая", color: "#0f0" },
-      medium: { speed: 120, name: "Средняя", color: "#ff0" },
-      hard: { speed: 90, name: "Сложная", color: "#f90" },
-      expert: { speed: 60, name: "Эксперт", color: "#f00" }
-    };
-
-    // Переменные игры
-    let snake = [];
-    let food = {};
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
-    let gameLoop;
-    let gameOver = false;
-    let lastDirection = { dx: 0, dy: 0 };
-    let highScore = localStorage.getItem('snakeHighScore') || 0;
-    let currentDifficulty = 'easy';
-    let gameSpeed = DIFFICULTY_SETTINGS[currentDifficulty].speed;
-
-    // Отображение рекорда в меню
-    highScoreElement.textContent = highScore;
-
-    // Получение выбранной сложности
-    function getSelectedDifficulty() {
-      const selected = document.querySelector('input[name="difficulty"]:checked');
-      return selected ? selected.value : 'easy';
-    }
-
-    // Обновление скорости игры в зависимости от сложности
-    function updateGameSpeed() {
-      currentDifficulty = getSelectedDifficulty();
-      gameSpeed = DIFFICULTY_SETTINGS[currentDifficulty].speed;
-      difficultyIndicator.textContent = `Сложность: ${DIFFICULTY_SETTINGS[currentDifficulty].name}`;
-      finalDifficultyElement.textContent = DIFFICULTY_SETTINGS[currentDifficulty].name;
-      
-      // Обновляем цвет индикатора сложности
-      difficultyIndicator.style.borderColor = DIFFICULTY_SETTINGS[currentDifficulty].color;
-    }
-
-    // Показать меню
-    function showMenu() {
-      menuElement.style.display = 'block';
-      gameOverElement.style.display = 'none';
-      canvas.style.display = 'none';
-      document.querySelector('.controls').style.display = 'none';
-      restartButton.style.display = 'none';
-      scoreElement.style.display = 'none';
-      difficultyIndicator.style.display = 'none';
-      document.querySelector('h1').style.display = 'none';
-    }
-
-    // Скрыть меню и показать игру
-    function hideMenu() {
-      menuElement.style.display = 'none';
-      canvas.style.display = 'block';
-      document.querySelector('.controls').style.display = 'grid';
-      restartButton.style.display = 'block';
-      scoreElement.style.display = 'block';
-      difficultyIndicator.style.display = 'block';
-      document.querySelector('h1').style.display = 'block';
-    }
-
-    // Показать правила игры
-    function showRules() {
-      alert(`Правила игры "Змейка":
-      
-1. Управляйте змейкой с помощью стрелок на клавиатуре или кнопок на экране
-2. Собирайте красную еду, чтобы увеличить счёт и длину змейки
-3. Избегайте столкновения со стенами и собственным телом
-4. Старайтесь побить свой рекорд!
-
-Уровни сложности:
-- Легкая: медленная скорость, подходит для новичков
-- Средняя: нормальная скорость
-- Сложная: высокая скорость, требует хорошей реакции
-- Эксперт: очень высокая скорость, для настоящих мастеров
-
-Удачи!`);
-    }
-
-    // Инициализация игры
-    function initGame() {
-      snake = [{ x: 10, y: 10 }];
-      dx = 1; // Начальное движение вправо
-      dy = 0;
-      score = 0;
-      gameOver = false;
-      lastDirection = { dx: 1, dy: 0 };
-      
-      scoreElement.textContent = `Счёт: ${score}`;
-      gameOverElement.style.display = 'none';
-      
-      // Обновляем сложность
-      updateGameSpeed();
-      
-      spawnFood();
-      draw();
-    }
-
-    // Отрисовка игры
-    function draw() {
-      // Очистка холста
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Отрисовка змейки
-      snake.forEach((segment, index) => {
-        // Меняем цвет головы в зависимости от сложности
-        if (index === 0) {
-          ctx.fillStyle = DIFFICULTY_SETTINGS[currentDifficulty].color;
-        } else {
-          ctx.fillStyle = index % 2 === 0 ? '#0c0' : '#090';
-        }
-        ctx.fillRect(
-          segment.x * GRID_SIZE, 
-          segment.y * GRID_SIZE, 
-          GRID_SIZE - 1, 
-          GRID_SIZE - 1
-        );
-      });
-
-      // Отрисовка еды
-      ctx.fillStyle = 'red';
-      ctx.beginPath();
-      ctx.arc(
-        food.x * GRID_SIZE + GRID_SIZE / 2,
-        food.y * GRID_SIZE + GRID_SIZE / 2,
-        GRID_SIZE / 2 - 1,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-    }
-
-    // Обновление состояния игры
-    function update() {
-      if (gameOver) return;
-
-      // Создаем новую голову змейки
-      const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-      
-      // Сохраняем текущее направление
-      lastDirection = { dx, dy };
-
-      // Проверка столкновения со стенами
-      if (
-        head.x < 0 || 
-        head.x >= TILE_COUNT || 
-        head.y < 0 || 
-        head.y >= TILE_COUNT
-      ) {
-        endGame();
-        return;
-      }
-
-      // Проверка столкновения с собой
-      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-        endGame();
-        return;
-      }
-
-      // Добавляем новую голову
-      snake.unshift(head);
-
-      // Проверка съедения еды
-      if (head.x === food.x && head.y === food.y) {
-        score++;
-        scoreElement.textContent = `Счёт: ${score}`;
-        spawnFood();
-      } else {
-        // Убираем хвост, если еда не съедена
-        snake.pop();
-      }
-    }
-
-    // Создание новой еды
-    function spawnFood() {
-      let newFood;
-      let foodOnSnake;
-      
-      do {
-        newFood = {
-          x: Math.floor(Math.random() * TILE_COUNT),
-          y: Math.floor(Math.random() * TILE_COUNT)
+    <script>
+        // Игровые данные
+        const gameData = {
+            credits: 0.00000100, // Маленький стартовый баланс
+            reputation: 0,
+            skill: 'Новичок',
+            energy: 100,
+            lastPlayed: Date.now(),
+            dailyRewardClaimed: false,
+            missions: {},
+            upgrades: {
+                processor: { level: 1, cost: 0.00050000, effect: 1, type: 'speed' },
+                firewall: { level: 1, cost: 0.00080000, effect: 1, type: 'stealth' },
+                stealth: { level: 1, cost: 0.00120000, effect: 1, type: 'reward' },
+                energy: { level: 1, cost: 0.00200000, effect: 100, type: 'capacity' },
+                minigame: { level: 1, cost: 0.00300000, effect: 1, type: 'minigame' },
+                mining: { level: 1, cost: 0.00500000, effect: 1, type: 'mining' }
+            },
+            shop: {
+                energyDrink: { name: 'Квантовый энергетик', desc: 'Восстанавливает 30 энергии', cost: 0.00010000, owned: 0 },
+                vpn: { name: 'Neural VPN Pro', desc: 'Увеличивает доход от миссий на 15%', cost: 0.00100000, owned: 0, active: false },
+                hackTool: { name: 'Quantum HackKit', desc: 'Ускоряет выполнение миссий на 20%', cost: 0.00200000, owned: 0 },
+                exploit: { name: 'Zero-Day Exploit', desc: 'Увеличивает шанс успеха взлома', cost: 0.00500000, owned: 0 },
+                decoder: { name: 'Neural Decoder', desc: 'Помогает в расшифровке кодов', cost: 0.00300000, owned: 0 }
+            },
+            offline: {
+                bots: 0,
+                rigs: 0,
+                botLevel: 1,
+                lastOnline: Date.now(),
+                offlineEarned: 0
+            },
+            minigame: {
+                level: 1,
+                completed: 0
+            }
         };
-        
-        foodOnSnake = snake.some(
-          segment => segment.x === newFood.x && segment.y === newFood.y
-        );
-      } while (foodOnSnake);
-      
-      food = newFood;
-    }
 
-    // Конец игры
-    function endGame() {
-      gameOver = true;
-      clearInterval(gameLoop);
-      
-      // Обновление рекорда
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem('snakeHighScore', highScore);
-        highScoreElement.textContent = highScore;
-      }
-      
-      finalScoreElement.textContent = `Счёт: ${score}`;
-      finalHighScoreElement.textContent = highScore;
-      gameOverElement.style.display = 'block';
-    }
+        // Команды терминала
+        const commands = {
+            'help': `Доступные команды:
+• scan - Сканирование сети
+• status - Статус системы
+• clear - Очистка терминала
+• credits - Баланс
+• missions - Список миссий
+• upgrades - Улучшения
+• shop - Магазин
+• hack - Мини-игра взлом
+• mine - Статус майнинга
+• decrypt [код] - Расшифровать код
+• matrix - Спец-эффект`,
 
-    // Обработчики управления
-    function setupControls() {
-      // Кнопки управления
-      document.getElementById('up').addEventListener('click', () => {
-        if (lastDirection.dy === 0) {
-          dx = 0;
-          dy = -1;
-        }
-      });
-      
-      document.getElementById('down').addEventListener('click', () => {
-        if (lastDirection.dy === 0) {
-          dx = 0;
-          dy = 1;
-        }
-      });
-      
-      document.getElementById('left').addEventListener('click', () => {
-        if (lastDirection.dx === 0) {
-          dx = -1;
-          dy = 0;
-        }
-      });
-      
-      document.getElementById('right').addEventListener('click', () => {
-        if (lastDirection.dx === 0) {
-          dx = 1;
-          dy = 0;
-        }
-      });
-      
-      // Клавиатура
-      document.addEventListener('keydown', e => {
-        if (gameOver) return;
-        
-        switch (e.key) {
-          case 'ArrowUp':
-            if (lastDirection.dy === 0) {
-              dx = 0;
-              dy = -1;
-            }
-            break;
-          case 'ArrowDown':
-            if (lastDirection.dy === 0) {
-              dx = 0;
-              dy = 1;
-            }
-            break;
-          case 'ArrowLeft':
-            if (lastDirection.dx === 0) {
-              dx = -1;
-              dy = 0;
-            }
-            break;
-          case 'ArrowRight':
-            if (lastDirection.dx === 0) {
-              dx = 1;
-              dy = 0;
-            }
-            break;
-        }
-      });
-      
-      // Кнопки меню
-      startGameButton.addEventListener('click', startGame);
-      viewRulesButton.addEventListener('click', showRules);
-      playAgainButton.addEventListener('click', startGame);
-      backToMenuButton.addEventListener('click', showMenu);
-      restartButton.addEventListener('click', startGame);
-      
-      // Обработчики изменения сложности
-      const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
-      difficultyOptions.forEach(option => {
-        option.addEventListener('change', updateGameSpeed);
-      });
-    }
+            'scan': function() { 
+                addToTerminal('> Сканирование DarkNet...');
+                addToTerminal('> Найдено 12 целей для взлома');
+                addToTerminal('> Обнаружены корпоративные сервера');
+                addToTerminal('> Зашифрованные каналы связи активированы');
+                return '> Сканирование завершено. Используйте "missions" для просмотра заданий.';
+            },
 
-    // Запуск игрового цикла
-    function startGame() {
-      hideMenu();
-      initGame();
-      clearInterval(gameLoop);
-      gameLoop = setInterval(() => {
-        update();
-        draw();
-      }, gameSpeed);
-    }
+            'status': function() { 
+                const energyPercent = (gameData.energy / (100 + (gameData.upgrades.energy.effect - 100))) * 100;
+                return `> СТАТУС СИСТЕМЫ:
+• Процессор: ${gameData.upgrades.processor.level} уровень
+• Фаервол: ${gameData.upgrades.firewall.level} уровень  
+• Стелс: ${gameData.upgrades.stealth.level} уровень
+• Энергия: ${energyPercent.toFixed(1)}%
+• Репутация: ${gameData.reputation}
+• Уровень: ${gameData.skill}`;
+            },
 
-    // Инициализация игры при загрузке страницы
-    window.addEventListener('load', () => {
-      setupControls();
-      showMenu();
-    });
-  </script>
+            'credits': function() { 
+                return `> КРИПТО-БАЛАНС: ${formatCrypto(gameData.credits)}₿`;
+            },
+
+            'clear': function() { clearTerminal(); },
+
+            'missions': function() { 
+                showNotification('Переключение на вкладку Миссии');
+                switchTab('missions');
+                return '> Открываю список миссий...'; 
+            },
+
+            'upgrades': function() { 
+                showNotification('Переключение на вкладку Улучшения');
+                switchTab('upgrades');
+                return '> Доступные улучшения загружены...'; 
+            },
+
+            'shop': function() { 
+                showNotification('Переключение на вкладку Магазин');
+                switchTab('shop');
+                return '> Подключаюсь к черному рынку...'; 
+            },
+
+            'hack': function() { 
+                showNotification('Переключение на мини-игру Взлом');
+                switchTab('minigame');
+                return '> Инициализация инструментов взлома...'; 
+            },
+
+            'mine': function() {
+                const income = calculateOfflineIncome();
+                return `> СТАТУС МАЙНИНГА:
+• Ботов: ${gameData.offline.bots}
+• Ригов: ${gameData.offline.rigs}
+• Хешрейт: ${calculateHashRate()} H/s
+• Доход/час: ${formatCrypto(income)}₿`;
+            },
+
+            'decrypt': function(code) {
+                if (!code) return '> Ошибка: укажите код для расшифровки\n> Использование: decrypt [код]';
+                
+                addToTerminal('> Запуск нейронного декодера...');
+                setTimeout(() => {
+                    const decoded = btoa(code).substring(0, 8);
+                    addToTerminal(`> Результат расшифровки: ${decoded}`);
+                }, 2000);
+                
+                return '> Процесс расшифровки запущен...';
+            },
+
+            'matrix': function() {
+                startMatrixRain();
+                addToTerminal('> Активация протокола "Матрица"...');
+                setTimeout(() => {
+                    addToTerminal('> Вы вошли в Киберпространство');
+                }, 1000);
+                return '';
+            }
+        };
+
+        // Миссии (сложные и с маленькими наградами)
+        const missions = {
+            'wifi': { 
+                name: 'Соседский Wi-Fi', 
+                desc: 'Взломать защиту WPA2 соседской сети', 
+                reward: 0.00000050, 
+                time: 30000, 
+                energy: 15,
+                reputation: 1,
+                cooldown: 60000,
+                difficulty: 'easy'
+            },
+            'bank': { 
+                name: 'Банковская система', 
+                desc: 'Обойти двухфакторную аутентификацию банка', 
+                reward: 0.00000200, 
+                time: 45000, 
+                energy: 25,
+                reputation: 3,
+                cooldown: 120000,
+                difficulty: 'medium'
+            },
+            'corp': { 
+                name: 'Корпорация Arasaka', 
+                desc: 'Взломать квантовую защиту серверов', 
+                reward: 0.00000500, 
+                time: 60000, 
+                energy: 35,
+                reputation: 7,
+                cooldown: 180000,
+                difficulty: 'hard'
+            },
+            'government': { 
+                name: 'Правительственный сервер', 
+                desc: 'Обойти систему ИИ-наблюдения', 
+                reward: 0.00001000, 
+                time: 90000, 
+                energy: 50,
+                reputation: 15,
+                cooldown: 300000,
+                difficulty: 'expert'
+            },
+            'ai': { 
+                name: 'Искусственный интеллект', 
+                desc: 'Взломать нейросеть управления ИИ', 
+                reward: 0.00002000, 
+                time: 120000, 
+                energy: 70,
+                reputation: 25,
+                cooldown: 600000,
+                difficulty: 'master'
+            },
+            'blockchain': { 
+                name: 'Блокчейн сеть', 
+                desc: 'Атака 51% на крипто-сеть', 
+                reward: 0.00005000, 
+                time: 150000, 
+                energy: 90,
+                reputation: 40,
+                cooldown: 900000,
+                difficulty: 'master'
+            }
+        };
+
+        // Улучшения
+        const upgradesList = {
+            'processor': { 
+                name: 'Квантовый процессор', 
+                desc: 'Увеличивает скорость взлома на 20% за уровень',
+                maxLevel: 20,
+                effectType: 'multiplier'
+            },
+            'firewall': { 
+                name: 'Стелс-фаервол', 
+                desc: 'Уменьшает вероятность обнаружения на 15% за уровень',
+                maxLevel: 15,
+                effectType: 'multiplier'
+            },
+            'stealth': { 
+                name: 'Нейро-стелс', 
+                desc: 'Увеличивает награду за миссии на 10% за уровень',
+                maxLevel: 25,
+                effectType: 'multiplier'
+            },
+            'energy': { 
+                name: 'Энергоядро', 
+                desc: 'Увеличивает максимальную энергию на 20 за уровень',
+                maxLevel: 10,
+                effectType: 'additive'
+            },
+            'minigame': { 
+                name: 'Взлом-интерфейс', 
+                desc: 'Увеличивает награду в мини-игре на 25% за уровень',
+                maxLevel: 8,
+                effectType: 'multiplier'
+            },
+            'mining': { 
+                name: 'Майнинг-ускоритель', 
+                desc: 'Увеличивает доход от майнинга на 30% за уровень',
+                maxLevel: 12,
+                effectType: 'multiplier'
+            }
+        };
+
+        // Переменные для мини-игры
+        let minigameActive = false;
+        let targets = [];
+        let foundTargets = 0;
+        let totalTargets = 3;
+        let mistakes = 0;
+        let maxMistakes = 3;
+        let hackTimer;
+        let timeLeft = 60;
+        let currentCodeHack = null;
+
+        // Форматирование крипто-значений
+        function formatCrypto(value) {
+            return value.toFixed(8);
+        }
+
+        // Инициализация игры
+        function initGame() {
+            loadGame();
+            updateUI();
+            setupEventListeners();
+            loadMissions();
+            loadShop();
+            loadUpgrades();
+            calculateOfflineEarnings();
+            
+            // Автосохранение каждые 30 секунд
+            setInterval(saveGame, 30000);
+            
+            // Восстановление энергии каждые 2 минуты
+            setInterval(restoreEnergy, 120000);
+            
+            // Случайные события
+            setInterval(randomEvent, 60000);
+        }
+
+        // Загрузка сохраненной игры
+        function loadGame() {
+            const saved = localStorage.getItem('neonhack_pro_save');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(gameData, parsed);
+                    showNotification('Система восстановлена из памяти');
+                    addToTerminal('> Загрузка сохраненного прогресса...');
+                } catch (e) {
+                    showNotification('Ошибка загрузки. Начата новая игра');
+                }
+            } else {
+                showNotification('Инициализация новой игровой сессии');
+            }
+        }
+
+        // Сохранение игры
+        function saveGame() {
+            gameData.lastPlayed = Date.now();
+            localStorage.setItem('neonhack_pro_save', JSON.stringify(gameData));
+        }
+
+        // Расчет оффлайн заработка
+        function calculateOfflineEarnings() {
+            const now = Date.now();
+            const timeDiff = now - gameData.offline.lastOnline;
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            if (hoursDiff > 0.016) { // Минимум 1 минута
+                const incomePerHour = calculateOfflineIncome();
+                const earned = hoursDiff * incomePerHour;
+                
+                if (earned > 0.00000001) {
+                    gameData.offline.offlineEarned += earned;
+                    gameData.credits += earned;
+                    showNotification(`Оффлайн майнинг: ${formatCrypto(earned)}₿ за ${hoursDiff.toFixed(2)}ч`);
+                    updateUI();
+                }
+            }
+            
+            gameData.offline.lastOnline = now;
+            document.getElementById('last-online').textContent = new Date(gameData.offline.lastOnline).toLocaleTimeString();
+        }
+
+        // Расчет хешрейта
+        function calculateHashRate() {
+            const baseRate = gameData.offline.bots * 10 + gameData.offline.rigs * 100;
+            const multiplier = gameData.upgrades.mining ? gameData.upgrades.mining.effect : 1;
+            return Math.floor(baseRate * multiplier);
+        }
+
+        // Расчет оффлайн дохода в час
+        function calculateOfflineIncome() {
+            const hashRate = calculateHashRate();
+            // Очень маленький доход, как у реального биткоина
+            return hashRate * 0.0000000001;
+        }
+
+        // Восстановление энергии
+        function restoreEnergy() {
+            const maxEnergy = 100 + (gameData.upgrades.energy ? (gameData.upgrades.energy.effect - 100) : 0);
+            if (gameData.energy < maxEnergy) {
+                gameData.energy = Math.min(gameData.energy + 2, maxEnergy);
+                updateUI();
+            }
+        }
+
+        // Случайные события
+        function randomEvent() {
+            const events = [
+                'Обнаружена новая уязвимость Zero-Day',
+                'Квантовый дешифратор активирован',
+                'Сканирование портов: обнаружены скрытые сервисы',
+                'Предупреждение: активность ICE повышена',
+                'Новые контракты доступны в DarkNet',
+                'Криптовалютный кошелек синхронизирован с блокчейном',
+                'Обновление протоколов кибербезопасности',
+                'Обнаружена бэкдор-уязвимость в корпоративной сети'
+            ];
+            
+            if (Math.random() > 0.3) {
+                const event = events[Math.floor(Math.random() * events.length)];
+                addToTerminal(`>> СИСТЕМНОЕ УВЕДОМЛЕНИЕ: ${event}`);
+            }
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Терминал
+            document.getElementById('command-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const input = this.value.trim();
+                    const parts = input.split(' ');
+                    const command = parts[0].toLowerCase();
+                    const args = parts.slice(1).join(' ');
+                    
+                    this.value = '';
+                    processCommand(command, args);
+                }
+            });
+
+            // Вкладки
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+
+            // Ежедневная награда
+            document.getElementById('daily-reward').addEventListener('click', claimDailyReward);
+
+            // Мини-игра
+            document.getElementById('start-minigame').addEventListener('click', startMinigame);
+            document.getElementById('reset-minigame').addEventListener('click', resetMinigame);
+
+            // Оффлайн
+            document.getElementById('buy-bot').addEventListener('click', buyBot);
+            document.getElementById('upgrade-bot').addEventListener('click', upgradeBot);
+            document.getElementById('buy-rig').addEventListener('click', buyRig);
+        }
+
+        // Обработка команд терминала
+        function processCommand(command, args) {
+            const output = document.getElementById('output');
+            
+            if (commands[command]) {
+                if (typeof commands[command] === 'function') {
+                    const result = commands[command](args);
+                    if (result) addToTerminal(result);
+                } else {
+                    addToTerminal(commands[command]);
+                }
+            } else {
+                addToTerminal(`> Ошибка: команда '${command}' не найдена.\n> Введите 'help' для списка команд.`);
+            }
+        }
+
+        // Добавление текста в терминал
+        function addToTerminal(text) {
+            const output = document.getElementById('output');
+            const lines = text.split('\n');
+            
+            lines.forEach(line => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'terminal-line';
+                lineElement.textContent = line;
+                output.appendChild(lineElement);
+            });
+            
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Очистка терминала
+        function clearTerminal() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        // Переключение вкладок
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            
+            if (tabName === 'minigame') {
+                initMinigame();
+            }
+        }
+
+        // Загрузка миссий
+        function loadMissions() {
+            const missionsList = document.getElementById('missions-list');
+            missionsList.innerHTML = '';
+            
+            for (const [id, mission] of Object.entries(missions)) {
+                const missionElem = document.createElement('div');
+                missionElem.className = 'mission';
+                missionElem.onclick = () => startMission(id);
+                
+                const lastCompleted = gameData.missions[id] || 0;
+                const cooldownLeft = lastCompleted + mission.cooldown - Date.now();
+                const onCooldown = cooldownLeft > 0;
+                const difficultyClass = `difficulty-${mission.difficulty}`;
+                
+                missionElem.innerHTML = `
+                    <div class="mission-title">
+                        [${mission.name.toUpperCase()}] 
+                        <span class="difficulty-indicator ${difficultyClass}">${mission.difficulty.toUpperCase()}</span>
+                    </div>
+                    <div class="mission-desc">${mission.desc}</div>
+                    <div class="mission-reward">Награда: ${formatCrypto(mission.reward)}₿ + ${mission.reputation} репутации</div>
+                    <div class="mission-energy">Энергия: ${mission.energy}</div>
+                    ${onCooldown ? `<div class="mission-cooldown">Перезарядка: ${Math.ceil(cooldownLeft/1000)}с</div>` : ''}
+                `;
+                
+                if (onCooldown || gameData.energy < mission.energy) {
+                    missionElem.style.opacity = '0.6';
+                    missionElem.style.cursor = 'not-allowed';
+                    missionElem.onclick = null;
+                }
+                
+                missionsList.appendChild(missionElem);
+            }
+        }
+
+        // Загрузка магазина
+        function loadShop() {
+            const shopItems = document.getElementById('shop-items');
+            shopItems.innerHTML = '';
+            
+            for (const [id, item] of Object.entries(gameData.shop)) {
+                const itemElem = document.createElement('div');
+                itemElem.className = 'shop-item';
+                itemElem.onclick = () => buyShopItem(id);
+                
+                itemElem.innerHTML = `
+                    <div class="shop-item-title">${item.name}</div>
+                    <div class="shop-item-desc">${item.desc}</div>
+                    <div class="shop-item-price">Цена: ${formatCrypto(item.cost)}₿</div>
+                    ${item.owned > 0 ? `<div class="shop-item-desc">Куплено: ${item.owned}</div>` : ''}
+                `;
+                
+                if (gameData.credits < item.cost) {
+                    itemElem.style.opacity = '0.6';
+                    itemElem.style.cursor = 'not-allowed';
+                    itemElem.onclick = null;
+                }
+                
+                shopItems.appendChild(itemElem);
+            }
+        }
+
+        // Загрузка улучшений
+        function loadUpgrades() {
+            const upgradesListElem = document.getElementById('upgrades-list');
+            upgradesListElem.innerHTML = '';
+            
+            for (const [id, upgrade] of Object.entries(upgradesList)) {
+                const currentLevel = gameData.upgrades[id] ? gameData.upgrades[id].level : 0;
+                const currentCost = gameData.upgrades[id] ? gameData.upgrades[id].cost : upgrade.cost || 0.00050000;
+                const maxEnergy = 100 + (gameData.upgrades.energy ? (gameData.upgrades.energy.effect - 100) : 0);
+                
+                let effectText = '';
+                if (id === 'energy') {
+                    effectText = `Макс. энергия: ${maxEnergy}`;
+                } else {
+                    const effectValue = gameData.upgrades[id] ? (gameData.upgrades[id].effect * 100 - 100).toFixed(0) : '0';
+                    effectText = `Эффективность: +${effectValue}%`;
+                }
+                
+                const upgradeElem = document.createElement('div');
+                upgradeElem.className = 'upgrade-item';
+                
+                upgradeElem.innerHTML = `
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">${upgrade.name}</div>
+                        <div class="upgrade-desc">${upgrade.desc}</div>
+                        <div class="upgrade-effect">${effectText}</div>
+                    </div>
+                    <div class="upgrade-level">Ур. ${currentLevel}/${upgrade.maxLevel}</div>
+                    <button class="button" onclick="buyUpgrade('${id}')" 
+                            ${currentLevel >= upgrade.maxLevel || gameData.credits < currentCost ? 'disabled' : ''}>
+                        Улучшить (${formatCrypto(currentCost)}₿)
+                    </button>
+                `;
+                
+                upgradesListElem.appendChild(upgradeElem);
+            }
+        }
+
+        // Запуск миссии
+        function startMission(id) {
+            const mission = missions[id];
+            
+            if (gameData.energy < mission.energy) {
+                showNotification('Недостаточно энергии!');
+                return;
+            }
+            
+            const lastCompleted = gameData.missions[id] || 0;
+            if (Date.now() - lastCompleted < mission.cooldown) {
+                showNotification('Миссия еще на перезарядке!');
+                return;
+            }
+            
+            gameData.energy -= mission.energy;
+            updateUI();
+            
+            document.getElementById('hacking-screen').style.display = 'flex';
+            startMatrixRain();
+            
+            let progress = 0;
+            const steps = ['Обход фаервола...', 'Взлом шифрования...', 'Поиск уязвимостей...', 'Установка бэкдора...', 'Сокрытие следов...'];
+            let stepIndex = 0;
+            
+            const hackInterval = setInterval(() => {
+                // Сложный прогресс с возможностью неудачи
+                const successChance = 0.7 + (gameData.upgrades.firewall ? gameData.upgrades.firewall.effect * 0.05 : 0);
+                if (Math.random() > successChance) {
+                    progress = Math.max(0, progress - 10);
+                    document.getElementById('hack-status').textContent = 'Обнаружена система защиты! Перезапуск взлома...';
+                } else {
+                    progress += Math.random() * 8;
+                }
+                
+                if (progress >= (stepIndex + 1) * 20 && stepIndex < steps.length - 1) {
+                    stepIndex++;
+                    document.getElementById('hack-status').textContent = steps[stepIndex];
+                }
+                
+                if (progress >= 100) {
+                    progress = 100;
+                    completeMission(id, mission, hackInterval);
+                }
+                document.getElementById('hack-progress').textContent = Math.min(progress, 100).toFixed(0) + '%';
+            }, mission.time / 20);
+        }
+
+        // Завершение миссии
+        function completeMission(id, mission, hackInterval) {
+            clearInterval(hackInterval);
+            document.getElementById('hacking-screen').style.display = 'none';
+            
+            // Учет улучшений
+            const stealthBonus = gameData.upgrades.stealth ? gameData.upgrades.stealth.effect : 1;
+            const reward = mission.reward * stealthBonus;
+            
+            gameData.credits += reward;
+            gameData.reputation += mission.reputation;
+            gameData.missions[id] = Date.now();
+            
+            updateUI();
+            loadMissions();
+            
+            addToTerminal(`>> ВЗЛОМ УСПЕШЕН! Получено ${formatCrypto(reward)}₿ и ${mission.reputation} репутации`);
+            showNotification(`Миссия выполнена! +${formatCrypto(reward)}₿`);
+            
+            // Проверка повышения уровня
+            checkLevelUp();
+        }
+
+        // Отмена взлома
+        function cancelHack() {
+            document.getElementById('hacking-screen').style.display = 'none';
+            showNotification('Взлом прерван. Энергия не возвращена.');
+        }
+
+        // Ежедневная награда
+        function claimDailyReward() {
+            if (gameData.dailyRewardClaimed) {
+                showNotification('Ежедневная награда уже получена!');
+                return;
+            }
+            
+            const reward = 0.00005000 + gameData.reputation * 0.00000010;
+            gameData.credits += reward;
+            gameData.dailyRewardClaimed = true;
+            
+            updateUI();
+            showNotification(`Ежедневная награда: ${formatCrypto(reward)}₿!`);
+            addToTerminal(`>> ЕЖЕДНЕВНАЯ НАГРАДА: ${formatCrypto(reward)}₿`);
+        }
+
+        // Покупка предмета в магазине
+        function buyShopItem(id) {
+            const item = gameData.shop[id];
+            
+            if (gameData.credits < item.cost) {
+                showNotification('Недостаточно крипто-валюты!');
+                return;
+            }
+            
+            gameData.credits -= item.cost;
+            item.owned = (item.owned || 0) + 1;
+            
+            // Применение эффекта
+            if (id === 'energyDrink') {
+                const maxEnergy = 100 + (gameData.upgrades.energy ? (gameData.upgrades.energy.effect - 100) : 0);
+                gameData.energy = Math.min(gameData.energy + 30, maxEnergy);
+                showNotification('Энергия восстановлена!');
+            } else if (id === 'vpn') {
+                item.active = true;
+                showNotification('Neural VPN активирован!');
+            }
+            
+            updateUI();
+            loadShop();
+            showNotification(`Куплено: ${item.name}`);
+        }
+
+        // Покупка улучшения
+        function buyUpgrade(id) {
+            const upgrade = gameData.upgrades[id];
+            const upgradeInfo = upgradesList[id];
+            
+            if (!upgrade || upgrade.level >= upgradeInfo.maxLevel) {
+                showNotification('Улучшение максимального уровня!');
+                return;
+            }
+            
+            if (gameData.credits < upgrade.cost) {
+                showNotification('Недостаточно крипто-валюты!');
+                return;
+            }
+            
+            gameData.credits -= upgrade.cost;
+            upgrade.level++;
+            
+            // Расчет эффекта в зависимости от типа
+            if (upgradeInfo.effectType === 'multiplier') {
+                upgrade.effect = 1 + (upgrade.level * getUpgradeMultiplier(id));
+            } else if (upgradeInfo.effectType === 'additive') {
+                upgrade.effect = 100 + (upgrade.level * 20); // Для энергии
+            }
+            
+            upgrade.cost = upgrade.cost * 2.5; // Экспоненциальный рост цены
+            
+            updateUI();
+            loadUpgrades();
+            showNotification(`Улучшено: ${upgradeInfo.name} Ур. ${upgrade.level}`);
+        }
+
+        // Множитель улучшения
+        function getUpgradeMultiplier(id) {
+            const multipliers = {
+                'processor': 0.20,
+                'firewall': 0.15,
+                'stealth': 0.10,
+                'minigame': 0.25,
+                'mining': 0.30
+            };
+            return multipliers[id] || 0.10;
+        }
+
+        // Проверка повышения уровня
+        function checkLevelUp() {
+            const oldSkill = gameData.skill;
+            const rep = gameData.reputation;
+            
+            if (rep >= 200) gameData.skill = 'Кибер-легенда';
+            else if (rep >= 100) gameData.skill = 'Хакер-элита';
+            else if (rep >= 50) gameData.skill = 'Профессионал';
+            else if (rep >= 20) gameData.skill = 'Опытный';
+            else if (rep >= 5) gameData.skill = 'Новичок+';
+            else gameData.skill = 'Новичок';
+            
+            if (oldSkill !== gameData.skill) {
+                showNotification(`Повышение уровня: ${gameData.skill}!`);
+                addToTerminal(`>> ПОВЫШЕНИЕ УРОВНЯ: ${oldSkill} -> ${gameData.skill}`);
+            }
+        }
+
+        // Покупка бота
+        function buyBot() {
+            const cost = 0.00100000;
+            if (gameData.credits < cost) {
+                showNotification('Недостаточно крипто-валюты!');
+                return;
+            }
+            
+            gameData.credits -= cost;
+            gameData.offline.bots++;
+            
+            updateUI();
+            showNotification(`Куплен майнинг-бот! Всего: ${gameData.offline.bots}`);
+        }
+
+        // Покупка рига
+        function buyRig() {
+            const cost = 0.10000000;
+            if (gameData.credits < cost) {
+                showNotification('Недостаточно крипто-валюты!');
+                return;
+            }
+            
+            gameData.credits -= cost;
+            gameData.offline.rigs++;
+            
+            updateUI();
+            showNotification(`Куплен майнинг-риг! Всего: ${gameData.offline.rigs}`);
+        }
+
+        // Улучшение ботов
+        function upgradeBot() {
+            const cost = 0.00500000;
+            if (gameData.credits < cost) {
+                showNotification('Недостаточно крипто-валюты!');
+                return;
+            }
+            
+            gameData.credits -= cost;
+            gameData.offline.botLevel++;
+            
+            updateUI();
+            showNotification(`Улучшены боты! Уровень: ${gameData.offline.botLevel}`);
+        }
+
+        // Инициализация мини-игры
+        function initMinigame() {
+            const grid = document.getElementById('hack-grid');
+            grid.innerHTML = '';
+            grid.style.pointerEvents = 'none';
+            
+            // Большая сетка 6x6
+            for (let i = 0; i < 36; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'hack-cell';
+                cell.textContent = '?';
+                cell.onclick = () => checkCell(i, cell);
+                grid.appendChild(cell);
+            }
+            
+            document.getElementById('start-minigame').style.display = 'block';
+            document.getElementById('reset-minigame').style.display = 'none';
+            document.getElementById('minigame-level').textContent = gameData.minigame.level;
+            document.getElementById('code-hack').style.display = 'none';
+            
+            mistakes = 0;
+            foundTargets = 0;
+            updateMinigameStats();
+        }
+
+        // Запуск мини-игры
+        function startMinigame() {
+            if (gameData.energy < 10) {
+                showNotification('Недостаточно энергии!');
+                return;
+            }
+            
+            gameData.energy -= 10;
+            minigameActive = true;
+            foundTargets = 0;
+            mistakes = 0;
+            timeLeft = 60 - gameData.minigame.level * 5; // Меньше времени на высоких уровнях
+            totalTargets = 3 + Math.floor(gameData.minigame.level / 2);
+            
+            const grid = document.getElementById('hack-grid');
+            grid.style.pointerEvents = 'auto';
+            
+            // Сброс всех ячеек
+            const cells = grid.querySelectorAll('.hack-cell');
+            cells.forEach(cell => {
+                cell.className = 'hack-cell';
+                cell.textContent = '?';
+            });
+            
+            // Создание целей (без подсветки!)
+            targets = [];
+            while (targets.length < totalTargets) {
+                const randomIndex = Math.floor(Math.random() * 36);
+                if (!targets.includes(randomIndex)) {
+                    targets.push(randomIndex);
+                    // Не подсвечиваем цели - игрок должен найти сам!
+                }
+            }
+            
+            // Запуск таймера
+            hackTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('hack-timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endMinigame(false);
+                }
+                
+                // Случайная активация кодового взлома
+                if (timeLeft % 15 === 0 && !currentCodeHack) {
+                    activateCodeHack();
+                }
+            }, 1000);
+            
+            document.getElementById('start-minigame').style.display = 'none';
+            document.getElementById('reset-minigame').style.display = 'block';
+            
+            updateUI();
+            updateMinigameStats();
+        }
+
+        // Активация кодового взлома
+        function activateCodeHack() {
+            currentCodeHack = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('code-value').textContent = currentCodeHack;
+            document.getElementById('code-hack').style.display = 'block';
+            document.getElementById('code-input').value = '';
+            document.getElementById('hack-grid').style.pointerEvents = 'none';
+        }
+
+        // Проверка кода
+        function checkCode() {
+            const input = parseInt(document.getElementById('code-input').value);
+            if (input === currentCodeHack) {
+                document.getElementById('code-hack').style.display = 'none';
+                document.getElementById('hack-grid').style.pointerEvents = 'auto';
+                currentCodeHack = null;
+                showNotification('Код верный! Фаервол обойден.');
+                timeLeft += 10; // Бонус времени
+            } else {
+                mistakes++;
+                showNotification('Неверный код! Система защиты активирована.');
+                updateMinigameStats();
+            }
+        }
+
+        // Проверка ячейки в мини-игре
+        function checkCell(index, cell) {
+            if (!minigameActive || cell.classList.contains('found') || cell.classList.contains('failed')) return;
+            
+            if (targets.includes(index)) {
+                cell.classList.add('found');
+                cell.textContent = '✓';
+                foundTargets++;
+                
+                if (foundTargets >= totalTargets) {
+                    endMinigame(true);
+                }
+            } else {
+                cell.classList.add('failed');
+                cell.textContent = '✗';
+                mistakes++;
+                
+                if (mistakes >= maxMistakes) {
+                    endMinigame(false);
+                }
+            }
+            
+            updateMinigameStats();
+        }
+
+        // Обновление статистики мини-игры
+        function updateMinigameStats() {
+            document.getElementById('targets-found').textContent = foundTargets;
+            document.getElementById('targets-total').textContent = totalTargets;
+            document.getElementById('mistakes-count').textContent = mistakes;
+        }
+
+        // Завершение мини-игры
+        function endMinigame(success) {
+            minigameActive = false;
+            clearInterval(hackTimer);
+            
+            if (success) {
+                const baseReward = 0.00000100 * gameData.minigame.level;
+                const bonus = gameData.upgrades.minigame ? gameData.upgrades.minigame.effect : 1;
+                const timeBonus = (timeLeft / 60) * 0.5; // Бонус за оставшееся время
+                const reward = baseReward * bonus * (1 + timeBonus);
+                
+                gameData.credits += reward;
+                gameData.minigame.completed++;
+                
+                // Повышение уровня мини-игры каждые 3 завершения
+                if (gameData.minigame.completed % 3 === 0) {
+                    gameData.minigame.level++;
+                }
+                
+                updateUI();
+                showNotification(`Сложный взлом завершен! Награда: ${formatCrypto(reward)}₿`);
+                addToTerminal(`>> СЛОЖНЫЙ ВЗЛОМ: Уровень ${gameData.minigame.level} пройден. Награда: ${formatCrypto(reward)}₿`);
+            } else {
+                showNotification('Взлом провален! Система защиты заблокирована.');
+            }
+            
+            document.getElementById('hack-grid').style.pointerEvents = 'none';
+            document.getElementById('code-hack').style.display = 'none';
+            currentCodeHack = null;
+        }
+
+        // Сброс мини-игры
+        function resetMinigame() {
+            minigameActive = false;
+            clearInterval(hackTimer);
+            initMinigame();
+        }
+
+        // Матричный дождь
+        function startMatrixRain() {
+            const matrix = document.getElementById('matrix');
+            matrix.innerHTML = '';
+            
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const columns = Math.floor(window.innerWidth / 20);
+            
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.style.position = 'absolute';
+                column.style.top = '-100px';
+                column.style.left = (i * 20) + 'px';
+                column.style.width = '20px';
+                column.style.textAlign = 'center';
+                column.style.fontSize = '16px';
+                column.style.color = var(--neon-green);
+                column.style.textShadow = '0 0 8px var(--neon-green)';
+                
+                let text = '';
+                const length = Math.floor(Math.random() * 20) + 10;
+                for (let j = 0; j < length; j++) {
+                    text += chars[Math.floor(Math.random() * chars.length)];
+                }
+                
+                column.textContent = text;
+                column.style.animation = `rain ${Math.random() * 3 + 2}s linear infinite`;
+                column.style.animationDelay = `${Math.random() * 2}s`;
+                
+                matrix.appendChild(column);
+            }
+        }
+
+        // Показать уведомление
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 4000);
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            document.getElementById('credits').textContent = `${formatCrypto(gameData.credits)}₿`;
+            document.getElementById('rep').textContent = gameData.reputation;
+            document.getElementById('skill').textContent = gameData.skill;
+            document.getElementById('energy').textContent = gameData.energy;
+            
+            // Оффлайн статистика
+            document.getElementById('bot-count').textContent = gameData.offline.bots;
+            document.getElementById('hash-rate').textContent = calculateHashRate();
+            document.getElementById('offline-income').textContent = formatCrypto(calculateOfflineIncome());
+            document.getElementById('last-online').textContent = new Date(gameData.offline.lastOnline).toLocaleTimeString();
+            document.getElementById('offline-earned').textContent = formatCrypto(gameData.offline.offlineEarned);
+            
+            // Ежедневная награда
+            document.getElementById('daily-reward').disabled = gameData.dailyRewardClaimed;
+            
+            saveGame();
+        }
+
+        // Добавляем стили для анимации дождя
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rain {
+                0% { transform: translateY(-100px); opacity: 1; }
+                100% { transform: translateY(100vh); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Запуск игры при загрузке страницы
+        window.onload = initGame;
+    </script>
 </body>
 </html>
