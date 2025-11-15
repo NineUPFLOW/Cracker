@@ -1,570 +1,222 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Змейка</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #111;
-      color: #0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      user-select: none;
-      overflow: hidden;
-    }
-    h1 { margin-bottom: 10px; font-size: 2rem; }
-    #score { margin-bottom: 15px; font-size: 1.2rem; }
-    canvas {
-      border: 3px solid #0f0;
-      image-rendering: pixelated;
-      background: #000;
-      display: none;
-    }
-    .controls {
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      grid-template-rows: repeat(3, 60px);
-      gap: 10px;
-      display: none;
-    }
-    .btn {
-      background: #222;
-      border: 2px solid #0f0;
-      color: #0f0;
-      font-size: 1.5rem;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .btn:active { background: #0f0; color: #000; }
-    .btn.empty { background: transparent; border: none; cursor: default; }
-    #restart {
-      margin-top: 20px;
-      padding: 12px 24px;
-      background: #0f0;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 1rem;
-      display: none;
-    }
-    #restart:hover { background: #0c0; }
-    
-    /* Стили для меню */
-    #menu {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px solid #0f0;
-      text-align: center;
-      width: 350px;
-    }
-    #menu h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-    #menu p {
-      margin: 15px 0;
-      font-size: 1.2rem;
-    }
-    .menu-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #0f0;
-      color: #000;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      transition: all 0.2s;
-    }
-    .menu-btn:hover {
-      background: #0c0;
-    }
-    
-    /* Стили для выбора сложности */
-    .difficulty-selector {
-      margin: 20px 0;
-      text-align: left;
-    }
-    .difficulty-selector h3 {
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .difficulty-option {
-      display: flex;
-      align-items: center;
-      margin: 8px 0;
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .difficulty-option:hover {
-      background: rgba(0, 255, 0, 0.1);
-    }
-    .difficulty-option input {
-      margin-right: 10px;
-    }
-    .difficulty-option label {
-      flex: 1;
-      cursor: pointer;
-    }
-    .difficulty-description {
-      font-size: 0.9rem;
-      color: #0c0;
-      margin-left: 10px;
-    }
-    
-    /* Стили для окна окончания игры */
-    #game-over {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px solid #0f0;
-      text-align: center;
-      width: 300px;
-      display: none;
-    }
-    #game-over h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-    #game-over p {
-      margin: 15px 0;
-      font-size: 1.2rem;
-    }
-    
-    /* Индикатор сложности в игре */
-    #difficulty-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 5px 10px;
-      border-radius: 5px;
-      border: 1px solid #0f0;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровой Бот - Выбор игры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .games-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .game-btn {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+            background: #fff;
+        }
+
+        .game-icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+            width: 60px;
+            text-align: center;
+        }
+
+        .game-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .game-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .game-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .instructions p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            .game-btn {
+                padding: 15px;
+            }
+            
+            .game-icon {
+                font-size: 2em;
+                margin-right: 12px;
+                width: 50px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Змейка</h1>
-  <div id="score">Счёт: 0</div>
-  <div id="difficulty-indicator">Сложность: Легкая</div>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="container">
+        <div class="logo">🎮</div>
+        <h1>Игровой Бот</h1>
+        <p class="subtitle">Выберите игру из списка ниже</p>
+        
+        <div class="games-grid">
+            <div class="game-btn" onclick="openGame('game1')">
+                <div class="game-icon">🐍</div>
+                <div class="game-info">
+                    <div class="game-title">Игра 1</div>
+                    <div class="game-description">Увлекательная аркадная игра с простым управлением</div>
+                </div>
+            </div>
+            
+            <div class="game-btn" onclick="openGame('game2')">
+                <div class="game-icon">💻</div>
+                <div class="game-info">
+                    <div class="game-title">Игра 2</div>
+                    <div class="game-description">Стратегическая головоломка для развития логики</div>
+                </div>
+            </div>
 
-  <div class="controls">
-    <div class="btn empty"></div>
-    <button class="btn" id="up">↑</button>
-    <div class="btn empty"></div>
-
-    <button class="btn" id="left">←</button>
-    <div class="btn empty"></div>
-    <button class="btn" id="right">→</button>
-
-    <div class="btn empty"></div>
-    <button class="btn" id="down">↓</button>
-    <div class="btn empty"></div>
-  </div>
-
-  <button id="restart">🔄 Новая игра</button>
-
-  <!-- Меню -->
-  <div id="menu">
-    <h2>Змейка</h2>
-    <p>Рекорд: <span id="high-score">0</span></p>
-    
-    <div class="difficulty-selector">
-      <h3>Выберите сложность:</h3>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="easy" name="difficulty" value="easy" checked>
-        <label for="easy">Легкая</label>
-        <span class="difficulty-description">Медленная скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="medium" name="difficulty" value="medium">
-        <label for="medium">Средняя</label>
-        <span class="difficulty-description">Нормальная скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="hard" name="difficulty" value="hard">
-        <label for="hard">Сложная</label>
-        <span class="difficulty-description">Высокая скорость</span>
-      </div>
-      
-      <div class="difficulty-option">
-        <input type="radio" id="expert" name="difficulty" value="expert">
-        <label for="expert">Эксперт</label>
-        <span class="difficulty-description">Очень высокая скорость</span>
-      </div>
+        <div class="instructions">
+            <h3>📋 Как играть?</h3>
+            <p>Просто выберите игру из списка выше. Для возврата в это меню используйте кнопку "Назад" в самой игре.</p>
+        </div>
     </div>
-    
-    <button id="start-game" class="menu-btn">Начать игру</button>
-    <button id="view-rules" class="menu-btn">Правила игры</button>
-  </div>
 
-  <!-- Окно окончания игры -->
-  <div id="game-over">
-    <h2>Игра окончена!</h2>
-    <p id="final-score">Счёт: 0</p>
-    <p>Рекорд: <span id="final-high-score">0</span></p>
-    <p>Сложность: <span id="final-difficulty">Легкая</span></p>
-    <button id="play-again" class="menu-btn">Играть снова</button>
-    <button id="back-to-menu" class="menu-btn">Вернуться в меню</button>
-  </div>
-
-  <script>
-    // Получаем элементы DOM
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreElement = document.getElementById('score');
-    const menuElement = document.getElementById('menu');
-    const gameOverElement = document.getElementById('game-over');
-    const finalScoreElement = document.getElementById('final-score');
-    const highScoreElement = document.getElementById('high-score');
-    const finalHighScoreElement = document.getElementById('final-high-score');
-    const finalDifficultyElement = document.getElementById('final-difficulty');
-    const difficultyIndicator = document.getElementById('difficulty-indicator');
-    const startGameButton = document.getElementById('start-game');
-    const playAgainButton = document.getElementById('play-again');
-    const backToMenuButton = document.getElementById('back-to-menu');
-    const viewRulesButton = document.getElementById('view-rules');
-    const restartButton = document.getElementById('restart');
-
-    // Константы игры
-    const GRID_SIZE = 20;
-    const TILE_COUNT = canvas.width / GRID_SIZE;
-
-    // Настройки сложности
-    const DIFFICULTY_SETTINGS = {
-      easy: { speed: 150, name: "Легкая", color: "#0f0" },
-      medium: { speed: 120, name: "Средняя", color: "#ff0" },
-      hard: { speed: 90, name: "Сложная", color: "#f90" },
-      expert: { speed: 60, name: "Эксперт", color: "#f00" }
-    };
-
-    // Переменные игры
-    let snake = [];
-    let food = {};
-    let dx = 0;
-    let dy = 0;
-    let score = 0;
-    let gameLoop;
-    let gameOver = false;
-    let lastDirection = { dx: 0, dy: 0 };
-    let highScore = localStorage.getItem('snakeHighScore') || 0;
-    let currentDifficulty = 'easy';
-    let gameSpeed = DIFFICULTY_SETTINGS[currentDifficulty].speed;
-
-    // Отображение рекорда в меню
-    highScoreElement.textContent = highScore;
-
-    // Получение выбранной сложности
-    function getSelectedDifficulty() {
-      const selected = document.querySelector('input[name="difficulty"]:checked');
-      return selected ? selected.value : 'easy';
-    }
-
-    // Обновление скорости игры в зависимости от сложности
-    function updateGameSpeed() {
-      currentDifficulty = getSelectedDifficulty();
-      gameSpeed = DIFFICULTY_SETTINGS[currentDifficulty].speed;
-      difficultyIndicator.textContent = `Сложность: ${DIFFICULTY_SETTINGS[currentDifficulty].name}`;
-      finalDifficultyElement.textContent = DIFFICULTY_SETTINGS[currentDifficulty].name;
-      
-      // Обновляем цвет индикатора сложности
-      difficultyIndicator.style.borderColor = DIFFICULTY_SETTINGS[currentDifficulty].color;
-    }
-
-    // Показать меню
-    function showMenu() {
-      menuElement.style.display = 'block';
-      gameOverElement.style.display = 'none';
-      canvas.style.display = 'none';
-      document.querySelector('.controls').style.display = 'none';
-      restartButton.style.display = 'none';
-      scoreElement.style.display = 'none';
-      difficultyIndicator.style.display = 'none';
-      document.querySelector('h1').style.display = 'none';
-    }
-
-    // Скрыть меню и показать игру
-    function hideMenu() {
-      menuElement.style.display = 'none';
-      canvas.style.display = 'block';
-      document.querySelector('.controls').style.display = 'grid';
-      restartButton.style.display = 'block';
-      scoreElement.style.display = 'block';
-      difficultyIndicator.style.display = 'block';
-      document.querySelector('h1').style.display = 'block';
-    }
-
-    // Показать правила игры
-    function showRules() {
-      alert(`Правила игры "Змейка":
-      
-1. Управляйте змейкой с помощью стрелок на клавиатуре или кнопок на экране
-2. Собирайте красную еду, чтобы увеличить счёт и длину змейки
-3. Избегайте столкновения со стенами и собственным телом
-4. Старайтесь побить свой рекорд!
-
-Уровни сложности:
-- Легкая: медленная скорость, подходит для новичков
-- Средняя: нормальная скорость
-- Сложная: высокая скорость, требует хорошей реакции
-- Эксперт: очень высокая скорость, для настоящих мастеров
-
-Удачи!`);
-    }
-
-    // Инициализация игры
-    function initGame() {
-      snake = [{ x: 10, y: 10 }];
-      dx = 1; // Начальное движение вправо
-      dy = 0;
-      score = 0;
-      gameOver = false;
-      lastDirection = { dx: 1, dy: 0 };
-      
-      scoreElement.textContent = `Счёт: ${score}`;
-      gameOverElement.style.display = 'none';
-      
-      // Обновляем сложность
-      updateGameSpeed();
-      
-      spawnFood();
-      draw();
-    }
-
-    // Отрисовка игры
-    function draw() {
-      // Очистка холста
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Отрисовка змейки
-      snake.forEach((segment, index) => {
-        // Меняем цвет головы в зависимости от сложности
-        if (index === 0) {
-          ctx.fillStyle = DIFFICULTY_SETTINGS[currentDifficulty].color;
-        } else {
-          ctx.fillStyle = index % 2 === 0 ? '#0c0' : '#090';
-        }
-        ctx.fillRect(
-          segment.x * GRID_SIZE, 
-          segment.y * GRID_SIZE, 
-          GRID_SIZE - 1, 
-          GRID_SIZE - 1
-        );
-      });
-
-      // Отрисовка еды
-      ctx.fillStyle = 'red';
-      ctx.beginPath();
-      ctx.arc(
-        food.x * GRID_SIZE + GRID_SIZE / 2,
-        food.y * GRID_SIZE + GRID_SIZE / 2,
-        GRID_SIZE / 2 - 1,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-    }
-
-    // Обновление состояния игры
-    function update() {
-      if (gameOver) return;
-
-      // Создаем новую голову змейки
-      const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-      
-      // Сохраняем текущее направление
-      lastDirection = { dx, dy };
-
-      // Проверка столкновения со стенами
-      if (
-        head.x < 0 || 
-        head.x >= TILE_COUNT || 
-        head.y < 0 || 
-        head.y >= TILE_COUNT
-      ) {
-        endGame();
-        return;
-      }
-
-      // Проверка столкновения с собой
-      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-        endGame();
-        return;
-      }
-
-      // Добавляем новую голову
-      snake.unshift(head);
-
-      // Проверка съедения еды
-      if (head.x === food.x && head.y === food.y) {
-        score++;
-        scoreElement.textContent = `Счёт: ${score}`;
-        spawnFood();
-      } else {
-        // Убираем хвост, если еда не съедена
-        snake.pop();
-      }
-    }
-
-    // Создание новой еды
-    function spawnFood() {
-      let newFood;
-      let foodOnSnake;
-      
-      do {
-        newFood = {
-          x: Math.floor(Math.random() * TILE_COUNT),
-          y: Math.floor(Math.random() * TILE_COUNT)
-        };
-        
-        foodOnSnake = snake.some(
-          segment => segment.x === newFood.x && segment.y === newFood.y
-        );
-      } while (foodOnSnake);
-      
-      food = newFood;
-    }
-
-    // Конец игры
-    function endGame() {
-      gameOver = true;
-      clearInterval(gameLoop);
-      
-      // Обновление рекорда
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem('snakeHighScore', highScore);
-        highScoreElement.textContent = highScore;
-      }
-      
-      finalScoreElement.textContent = `Счёт: ${score}`;
-      finalHighScoreElement.textContent = highScore;
-      gameOverElement.style.display = 'block';
-    }
-
-    // Обработчики управления
-    function setupControls() {
-      // Кнопки управления
-      document.getElementById('up').addEventListener('click', () => {
-        if (lastDirection.dy === 0) {
-          dx = 0;
-          dy = -1;
-        }
-      });
-      
-      document.getElementById('down').addEventListener('click', () => {
-        if (lastDirection.dy === 0) {
-          dx = 0;
-          dy = 1;
-        }
-      });
-      
-      document.getElementById('left').addEventListener('click', () => {
-        if (lastDirection.dx === 0) {
-          dx = -1;
-          dy = 0;
-        }
-      });
-      
-      document.getElementById('right').addEventListener('click', () => {
-        if (lastDirection.dx === 0) {
-          dx = 1;
-          dy = 0;
-        }
-      });
-      
-      // Клавиатура
-      document.addEventListener('keydown', e => {
-        if (gameOver) return;
-        
-        switch (e.key) {
-          case 'ArrowUp':
-            if (lastDirection.dy === 0) {
-              dx = 0;
-              dy = -1;
+    <script>
+        function openGame(gameName) {
+            // Сохраняем информацию о выбранной игре
+            localStorage.setItem('lastSelectedGame', gameName);
+            localStorage.setItem('menuTimestamp', Date.now());
+            
+            // Перенаправляем на выбранную игру
+            switch(gameName) {
+                case 'game1':
+                    window.location.href = 'game1/index.html';
+                    break;
+                case 'game2':
+                    window.location.href = 'game2/index.html';
+                    break;
+                case 'game3':
+                    window.location.href = 'game3/index.html';
+                    break;
+                default:
+                    alert('Игра "' + gameName + '" не найдена!');
             }
-            break;
-          case 'ArrowDown':
-            if (lastDirection.dy === 0) {
-              dx = 0;
-              dy = 1;
-            }
-            break;
-          case 'ArrowLeft':
-            if (lastDirection.dx === 0) {
-              dx = -1;
-              dy = 0;
-            }
-            break;
-          case 'ArrowRight':
-            if (lastDirection.dx === 0) {
-              dx = 1;
-              dy = 0;
-            }
-            break;
         }
-      });
-      
-      // Кнопки меню
-      startGameButton.addEventListener('click', startGame);
-      viewRulesButton.addEventListener('click', showRules);
-      playAgainButton.addEventListener('click', startGame);
-      backToMenuButton.addEventListener('click', showMenu);
-      restartButton.addEventListener('click', startGame);
-      
-      // Обработчики изменения сложности
-      const difficultyOptions = document.querySelectorAll('input[name="difficulty"]');
-      difficultyOptions.forEach(option => {
-        option.addEventListener('change', updateGameSpeed);
-      });
-    }
 
-    // Запуск игрового цикла
-    function startGame() {
-      hideMenu();
-      initGame();
-      clearInterval(gameLoop);
-      gameLoop = setInterval(() => {
-        update();
-        draw();
-      }, gameSpeed);
-    }
+        // Проверяем, есть ли сохраненная игра для быстрого возврата
+        function checkReturningUser() {
+            const lastGame = localStorage.getItem('lastSelectedGame');
+            const timestamp = localStorage.getItem('menuTimestamp');
+            
+            if (lastGame && timestamp) {
+                const timeDiff = Date.now() - parseInt(timestamp);
+                // Если пользователь вернулся в течение 1 часа
+                if (timeDiff < 3600000) {
+                    console.log('Возвращающийся пользователь, последняя игра:', lastGame);
+                }
+            }
+        }
 
-    // Инициализация игры при загрузке страницы
-    window.addEventListener('load', () => {
-      setupControls();
-      showMenu();
-    });
-  </script>
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            checkReturningUser();
+            
+            // Для Telegram WebApp
+            if (window.Telegram && window.Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+            }
+        });
+    </script>
 </body>
 </html>
