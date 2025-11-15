@@ -3,7 +3,7 @@ from telegram import Update, WebAppInfo, InlineKeyboardButton, InlineKeyboardMar
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # ВСТАВЬ СЮДА СВОЙ ТОКЕН ОТ @BotFather
-BOT_TOKEN = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+BOT_TOKEN = "8528304594:AAG75-oUS8FLHfupz3Z1W1ixZNOdVToBcqE"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[
