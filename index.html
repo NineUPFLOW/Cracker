@@ -3,188 +3,976 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игровой Бот - Выбор игры</title>
+    <title>NeuroNet // HACKING INTERFACE</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --neon-blue: #00a8ff;
+            --neon-green: #00ff9d;
+            --neon-purple: #9d4dff;
+            --neon-red: #ff3e3e;
+            --neon-yellow: #ffd600;
+            --dark-bg: #0c0e14;
+            --darker-bg: #080a0f;
+            --panel-bg: #151a25;
+            --terminal-bg: rgba(10, 15, 25, 0.95);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+        }
+
+        @font-face {
+            font-family: 'NeuroNet';
+            src: url('https://fonts.cdnfonts.com/css/cyberpunk-is-not-dead');
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
             min-height: 100vh;
+            padding: 10px;
+            padding-top: env(safe-area-inset-top);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 168, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(157, 77, 255, 0.05) 0%, transparent 20%);
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--neon-blue);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            border-left: 4px solid var(--neon-blue);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
-            font-size: 4em;
-            margin-bottom: 10px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 2.2em;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 1.1em;
-            line-height: 1.5;
-        }
-
-        .games-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .game-btn {
             display: flex;
             align-items: center;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            padding: 20px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .game-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-color: #667eea;
-            background: #fff;
-        }
-
-        .game-icon {
-            font-size: 2.5em;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--neon-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-right: 15px;
-            width: 60px;
-            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
         }
 
-        .game-info {
-            text-align: left;
+        .logo-text {
+            font-family: 'NeuroNet', 'Arial Narrow', sans-serif;
+            font-size: 1.8rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 168, 255, 0.3);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            border-left: 3px solid var(--neon-blue);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--neon-blue);
+            transition: width 0.3s;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+            padding: 12px 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .nav-tab i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 168, 255, 0.2);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        .terminal {
+            background: var(--terminal-bg);
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 168, 255, 0.3);
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+        }
+
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 168, 255, 0.3);
+        }
+
+        .prompt {
+            color: var(--neon-green);
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            outline: none;
             flex: 1;
         }
 
-        .game-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+        .missions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
-        .game-description {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.4;
+        .mission-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--neon-blue);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
-        .instructions {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 30px;
-            border-left: 4px solid #667eea;
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.1), transparent);
+            transition: left 0.5s;
         }
 
-        .instructions h3 {
-            color: #333;
+        .mission-card:hover::before {
+            left: 100%;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .mission-header {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
-            font-size: 1.1em;
         }
 
-        .instructions p {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.5;
+        .mission-title {
+            font-weight: bold;
+            color: var(--neon-blue);
         }
 
-        @media (max-width: 480px) {
+        .mission-difficulty {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .difficulty-easy { background: rgba(0, 255, 157, 0.2); color: var(--neon-green); }
+        .difficulty-medium { background: rgba(255, 214, 0, 0.2); color: var(--neon-yellow); }
+        .difficulty-hard { background: rgba(255, 62, 62, 0.2); color: var(--neon-red); }
+        .difficulty-expert { background: rgba(157, 77, 255, 0.2); color: var(--neon-purple); }
+
+        .mission-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #a0a0a0;
+        }
+
+        .mission-reward {
+            color: var(--neon-yellow);
+        }
+
+        /* Новые стили для улучшенного интерфейса */
+        .quest-chain {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid var(--neon-purple);
+        }
+
+        .quest-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .quest-step.completed {
+            background: rgba(0, 255, 157, 0.1);
+        }
+
+        .quest-step.active {
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .quest-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quest-checkbox.completed {
+            background: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        .quest-checkbox.completed::after {
+            content: '✓';
+            color: black;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .daily-challenges {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .daily-challenge {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 214, 0, 0.3);
+        }
+
+        .challenge-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .challenge-progress-bar {
+            height: 100%;
+            background: var(--neon-yellow);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        .leaderboard {
+            margin: 15px 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .leaderboard-rank.top {
+            background: var(--neon-yellow);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .quick-action {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 168, 255, 0.2);
+        }
+
+        .quick-action:hover {
+            background: rgba(0, 168, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .quick-action i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--neon-blue);
+        }
+
+        .event-banner {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(157, 77, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(157, 77, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(157, 77, 255, 0); }
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .nav-tab {
+                min-width: 80px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .daily-challenges {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 768px) {
             .container {
-                padding: 25px 20px;
+                max-width: 800px;
             }
             
-            .game-btn {
-                padding: 15px;
+            .stats-bar {
+                grid-template-columns: repeat(4, 1fr);
             }
             
-            .game-icon {
-                font-size: 2em;
-                margin-right: 12px;
-                width: 50px;
+            .missions-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            h1 {
-                font-size: 1.8em;
+            .quick-actions {
+                grid-template-columns: repeat(6, 1fr);
             }
+        }
+
+        /* Улучшенные стили мини-игр */
+        .minigame-container {
+            text-align: center;
+        }
+
+        .minigame-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        .minigame-tab {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .minigame-tab.active {
+            border-bottom: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .scan-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .scan-cell {
+            aspect-ratio: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+        }
+
+        .scan-cell:hover {
+            border-color: var(--neon-blue);
+        }
+
+        .scan-cell.target {
+            background: rgba(255, 62, 62, 0.2);
+            border-color: var(--neon-red);
+        }
+
+        .scan-cell.found {
+            background: rgba(0, 255, 157, 0.2);
+            border-color: var(--neon-green);
+        }
+
+        .scan-cell.failed {
+            background: rgba(255, 62, 62, 0.4);
+            border-color: var(--neon-red);
+        }
+
+        .code-game {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .code-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: var(--neon-green);
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+
+        .code-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .sequence-game {
+            margin: 20px 0;
+        }
+
+        .sequence-item {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sequence-item.active {
+            border-color: var(--neon-blue);
+            background: rgba(0, 168, 255, 0.2);
+        }
+
+        .timer {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin: 15px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            background: var(--panel-bg);
+            border-left: 4px solid var(--neon-blue);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .hacking-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 25, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+        }
+
+        .matrix-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            color: var(--neon-green);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--neon-blue);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .button {
+            background: var(--neon-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            background: #0095e0;
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .tg-button {
+            background: var(--neon-purple);
+        }
+
+        .tg-button:hover {
+            background: #8a3ffb;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="logo">🎮</div>
-        <h1>Игровой Бот</h1>
-        <p class="subtitle">Выберите игру из списка ниже</p>
-        
-        <div class="games-grid">
-            <a href="game1/index.html" class="game-btn">
-                <div class="game-icon">🐍</div>
-                <div class="game-info">
-                    <div class="game-title">Змейка</div>
-                    <div class="game-description">Классика  с простым управлением</div>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div>Инициализация NeuroNet...</div>
+    </div>
+
+    <div class="container" id="game-container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">NN</div>
+                <div class="logo-text">NEURONET</div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">H</div>
+                <div>
+                    <div id="username">HACKER_01</div>
+                    <div style="font-size: 0.8rem; color: #a0a0a0;">LEVEL <span id="user-level">1</span></div>
                 </div>
-            </a>
-            
-            <a href="game2/index.html" class="game-btn">
-                <div class="game-icon">💻</div>
-                <div class="game-info">
-                    <div class="game-title">Neon hack pro</div>
-                    <div class="game-description">Стратегическая головоломка для развития логики</div>
-                </div>
-            </a>
-        
+            </div>
         </div>
 
-        <div class="instructions">
-            <h3>📋 Как играть?</h3>
-            <p>Просто выберите игру из списка выше. Для возврата в это меню используйте кнопку "Назад" в самой игре.</p>
+        <!-- Быстрые действия -->
+        <div class="quick-actions">
+            <div class="quick-action" onclick="quickAction('energy')">
+                <i class="fas fa-bolt"></i>
+                <div>Энергия</div>
+            </div>
+            <div class="quick-action" onclick="quickAction('missions')">
+                <i class="fas fa-tasks"></i>
+                <div>Миссии</div>
+            </div>
+            <div class="quick-action" onclick="quickAction('hack')">
+                <i class="fas fa-terminal"></i>
+                <div>Взлом</div>
+            </div>
+            <div class="quick-action" onclick="quickAction('shop')">
+                <i class="fas fa-shopping-cart"></i>
+                <div>Магазин</div>
+            </div>
+            <div class="quick-action" onclick="quickAction('mining')">
+                <i class="fas fa-coins"></i>
+                <div>Майнинг</div>
+            </div>
+            <div class="quick-action" onclick="shareGame()">
+                <i class="fas fa-share"></i>
+                <div>Поделиться</div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="credits">0.00001000₿</div>
+                <div class="stat-label">КРИПТОБАЛАНС</div>
+                <div class="stat-progress" id="credits-progress"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="reputation">0</div>
+                <div class="stat-label">РЕПУТАЦИЯ</div>
+                <div class="stat-progress" id="reputation-progress"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="energy">100</div>
+                <div class="stat-label">ЭНЕРГИЯ</div>
+                <div class="stat-progress" id="energy-progress"></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="notoriety">0%</div>
+                <div class="stat-label">ИЗВЕСТНОСТЬ</div>
+                <div class="stat-progress" id="notoriety-progress"></div>
+            </div>
+        </div>
+
+        <!-- Баннер события -->
+        <div class="event-banner" id="event-banner" style="display: none;">
+            <h3><i class="fas fa-star"></i> СПЕЦИАЛЬНОЕ СОБЫТИЕ</h3>
+            <p id="event-text">x2 награды за все миссии!</p>
+            <div class="timer" id="event-timer">23:59:59</div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="terminal">
+                <i class="fas fa-terminal"></i>
+                <span>Терминал</span>
+            </div>
+            <div class="nav-tab" data-tab="missions">
+                <i class="fas fa-tasks"></i>
+                <span>Миссии</span>
+            </div>
+            <div class="nav-tab" data-tab="minigames">
+                <i class="fas fa-gamepad"></i>
+                <span>Взлом</span>
+            </div>
+            <div class="nav-tab" data-tab="shop">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Магазин</span>
+            </div>
+            <div class="nav-tab" data-tab="upgrades">
+                <i class="fas fa-microchip"></i>
+                <span>Улучшения</span>
+            </div>
+            <div class="nav-tab" data-tab="inventory">
+                <i class="fas fa-briefcase"></i>
+                <span>Инвентарь</span>
+            </div>
+        </div>
+
+        <!-- Содержимое вкладок остается таким же, но с добавлением новых функций -->
+        <div class="tab-content active" id="terminal-tab">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">СИСТЕМНЫЙ ТЕРМИНАЛ</div>
+                    <div style="color: var(--neon-green); font-size: 0.9rem;">ONLINE</div>
+                </div>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div>neuro://terminal/root</div>
+                        <div>ENCRYPTED CONNECTION</div>
+                    </div>
+                    <div class="terminal-output" id="output">
+                        <div>> Инициализация NeuroNet...</div>
+                        <div>> Подключение к скрытой сети...</div>
+                        <div>> Аутентификация...</div>
+                        <div>> Добро пожаловать в NeuroNet, хакер.</div>
+                        <div>> Введите 'help' для списка команд.</div>
+                    </div>
+                    <div class="terminal-input">
+                        <span class="prompt">root@neuro:~#</span>
+                        <input type="text" id="command-input" autocomplete="off" placeholder="Введите команду...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Цепочка квестов -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">ЦЕПОЧКА КВЕСТОВ</div>
+                    <div style="color: var(--neon-purple); font-size: 0.9rem;">НОВАЯ</div>
+                </div>
+                <div class="quest-chain" id="quest-chain">
+                    <!-- Квесты будут загружены через JS -->
+                </div>
+            </div>
+
+            <!-- Ежедневные испытания -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ</div>
+                    <div style="color: var(--neon-yellow); font-size: 0.9rem;" id="daily-reset"></div>
+                </div>
+                <div class="daily-challenges" id="daily-challenges">
+                    <!-- Испытания будут загружены через JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Остальное содержимое вкладок... -->
+
+    </div>
+
+    <div class="hacking-overlay" id="hacking-overlay">
+        <div class="matrix-effect" id="matrix-effect"></div>
+        <div style="position: relative; z-index: 2001; text-align: center;">
+            <h2 style="color: var(--neon-blue); margin-bottom: 20px;" id="hack-title">ПОДКЛЮЧЕНИЕ К СИСТЕМЕ...</h2>
+            <div class="timer" id="hack-progress">0%</div>
+            <div id="hack-status" style="color: var(--neon-green); margin: 15px 0;"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <button class="button" onclick="cancelHack()" style="background: var(--neon-red);">
+                <i class="fas fa-times"></i> ПРЕРВАТЬ ВЗЛОМ
+            </button>
         </div>
     </div>
 
-    <script>
-        // Сохраняем информацию о посещении меню
-        localStorage.setItem('menuVisited', 'true');
-        localStorage.setItem('menuLastVisit', Date.now());
+    <div class="notification" id="notification">
+        <div style="font-weight: bold; margin-bottom: 5px;">УВЕДОМЛЕНИЕ СИСТЕМЫ</div>
+        <div id="notification-text">Текст уведомления</div>
+    </div>
 
-        // Для Telegram WebApp
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                Telegram.WebApp.ready();
-                Telegram.WebApp.expand();
-            }
-        });
-    </script>
+    <script src="js/game.js"></script>
+    <script src="js/telegram-integration.js"></script>
+    <script src="js/quests.js"></script>
+    <script src="js/events.js"></script>
 </body>
 </html>
