@@ -3,241 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroNet // HACKING INTERFACE</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Data-Rebels | Расширенная Хакерская RPG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Базовые стили (оставлены из предыдущей версии) */
         :root {
-            --neon-blue: #00a8ff;
-            --neon-green: #00ff9d;
-            --neon-purple: #9d4dff;
-            --neon-red: #ff3e3e;
-            --neon-yellow: #ffd600;
-            --dark-bg: #0c0e14;
-            --darker-bg: #080a0f;
-            --panel-bg: #151a25;
-            --terminal-bg: rgba(10, 15, 25, 0.95);
+            --primary: #00ff88;
+            --secondary: #00ccff;
+            --accent: #ff0088;
+            --dark: #0a0a1f;
+            --darker: #050510;
+            --card-bg: rgba(16, 16, 48, 0.8);
+            --text: #ffffff;
+            --text-secondary: #a0a0c0;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --danger: #ff4444;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        @font-face {
-            font-family: 'NeuroNet';
-            src: url('https://fonts.cdnfonts.com/css/cyberpunk-is-not-dead');
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
-            background: var(--dark-bg);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
             min-height: 100vh;
-            padding: 10px;
-            padding-top: env(safe-area-inset-top);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 168, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(157, 77, 255, 0.05) 0%, transparent 20%);
+            overflow-x: hidden;
         }
 
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark-bg);
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,255,136,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
         }
 
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--neon-blue);
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-
+        /* Header */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: var(--panel-bg);
-            border-radius: 10px;
-            border-left: 4px solid var(--neon-blue);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--neon-blue);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .logo-text {
-            font-family: 'NeuroNet', 'Arial Narrow', sans-serif;
-            font-size: 1.8rem;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 168, 255, 0.3);
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: var(--neon-blue);
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            background: rgba(10, 10, 31, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
-        .stat-card {
-            background: var(--panel-bg);
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            border-left: 3px solid var(--neon-blue);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
+        .stat-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 8px 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
 
         .stat-value {
-            font-size: 1.5rem;
             font-weight: bold;
-            color: var(--neon-blue);
-            margin-bottom: 5px;
+            color: var(--primary);
+            font-size: 16px;
         }
 
-        .stat-label {
-            font-size: 0.7rem;
-            color: #a0a0a0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .energy-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
         }
 
-        .stat-progress {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            background: var(--neon-blue);
-            transition: width 0.3s;
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.5s ease;
         }
 
+        /* Navigation */
         .nav-tabs {
             display: flex;
-            background: var(--panel-bg);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            padding: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 4px;
+            margin-top: 10px;
         }
 
         .nav-tab {
             flex: 1;
-            min-width: 70px;
             text-align: center;
-            padding: 12px 5px;
+            padding: 10px 5px;
+            border-radius: 12px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-            color: #a0a0a0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .nav-tab i {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .nav-tab.active {
-            background: rgba(0, 168, 255, 0.2);
-            color: var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
+        .nav-tab i {
             display: block;
-            animation: fadeIn 0.5s;
+            font-size: 20px;
+            margin-bottom: 4px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .panel {
-            background: var(--panel-bg);
-            border-radius: 10px;
+        /* Main Content */
+        .content {
+            flex: 1;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
         }
 
-        .panel-header {
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -246,733 +158,2625 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .panel-title {
-            font-size: 1.2rem;
-            color: var(--neon-blue);
-            font-weight: bold;
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
         }
 
-        .terminal {
-            background: var(--terminal-bg);
-            border-radius: 8px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(0, 168, 255, 0.3);
-        }
-
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: var(--neon-blue);
-            font-size: 0.9rem;
-        }
-
-        .terminal-output {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-        }
-
-        .terminal-input {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid rgba(0, 168, 255, 0.3);
-        }
-
-        .prompt {
-            color: var(--neon-green);
-            margin-right: 8px;
-            white-space: nowrap;
-        }
-
-        #command-input {
-            background: transparent;
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            color: white;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            outline: none;
-            flex: 1;
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            width: 100%;
+            font-size: 16px;
+            margin: 8px 0;
         }
 
-        .missions-grid {
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff0066);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ff8800);
+        }
+
+        .btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Mission Grid */
+        .mission-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin: 20px 0;
         }
 
         .mission-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(16, 16, 48, 0.9), rgba(32, 32, 64, 0.9));
+            border-radius: 16px;
             padding: 15px;
-            border-left: 4px solid var(--neon-blue);
-            transition: all 0.3s;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-        }
-
-        .mission-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 168, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .mission-card:hover::before {
-            left: 100%;
         }
 
         .mission-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.2);
         }
 
-        .mission-header {
+        .mission-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 10px;
+            font-size: 24px;
+            color: var(--primary);
         }
 
-        .mission-title {
-            font-weight: bold;
-            color: var(--neon-blue);
+        .mission-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
         }
 
         .mission-difficulty {
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: bold;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
-        .difficulty-easy { background: rgba(0, 255, 157, 0.2); color: var(--neon-green); }
-        .difficulty-medium { background: rgba(255, 214, 0, 0.2); color: var(--neon-yellow); }
-        .difficulty-hard { background: rgba(255, 62, 62, 0.2); color: var(--neon-red); }
-        .difficulty-expert { background: rgba(157, 77, 255, 0.2); color: var(--neon-purple); }
-
-        .mission-info {
+        .mission-rewards {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #a0a0a0;
-        }
-
-        .mission-reward {
-            color: var(--neon-yellow);
-        }
-
-        /* Новые стили для улучшенного интерфейса */
-        .quest-chain {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            border-left: 4px solid var(--neon-purple);
-        }
-
-        .quest-step {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-        }
-
-        .quest-step.completed {
-            background: rgba(0, 255, 157, 0.1);
-        }
-
-        .quest-step.active {
-            background: rgba(0, 168, 255, 0.1);
-            border: 1px solid var(--neon-blue);
-        }
-
-        .quest-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--neon-blue);
-            border-radius: 50%;
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quest-checkbox.completed {
-            background: var(--neon-green);
-            border-color: var(--neon-green);
-        }
-
-        .quest-checkbox.completed::after {
-            content: '✓';
-            color: black;
             font-size: 12px;
-            font-weight: bold;
         }
 
-        .daily-challenges {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .daily-challenge {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(255, 214, 0, 0.3);
-        }
-
-        .challenge-progress {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin: 5px 0;
-            overflow: hidden;
-        }
-
-        .challenge-progress-bar {
-            height: 100%;
-            background: var(--neon-yellow);
-            border-radius: 2px;
-            transition: width 0.3s;
-        }
-
-        .leaderboard {
-            margin: 15px 0;
-        }
-
-        .leaderboard-item {
+        .reward {
             display: flex;
             align-items: center;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
+            gap: 4px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
             margin: 5px 0;
         }
 
-        .leaderboard-rank {
-            width: 30px;
-            height: 30px;
-            background: var(--neon-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 10px;
+        .stat-name {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        .leaderboard-rank.top {
-            background: var(--neon-yellow);
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        /* Progress Bars */
+        .progress-container {
             margin: 15px 0;
         }
 
-        .quick-action {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 10px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid rgba(0, 168, 255, 0.2);
-        }
-
-        .quick-action:hover {
-            background: rgba(0, 168, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .quick-action i {
-            font-size: 1.5rem;
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 5px;
-            color: var(--neon-blue);
-        }
-
-        .event-banner {
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(157, 77, 255, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(157, 77, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(157, 77, 255, 0); }
-        }
-
-        /* Адаптивность для мобильных устройств */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .nav-tabs {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            
-            .nav-tab {
-                min-width: 80px;
-            }
-            
-            .quick-actions {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .daily-challenges {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                max-width: 800px;
-            }
-            
-            .stats-bar {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .missions-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .quick-actions {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-
-        /* Улучшенные стили мини-игр */
-        .minigame-container {
-            text-align: center;
-        }
-
-        .minigame-tabs {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: auto;
-        }
-
-        .minigame-tab {
-            padding: 8px 15px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .minigame-tab.active {
-            border-bottom: 2px solid var(--neon-blue);
-            color: var(--neon-blue);
-        }
-
-        .scan-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin: 20px 0;
-        }
-
-        .scan-cell {
-            aspect-ratio: 1;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 1rem;
-        }
-
-        .scan-cell:hover {
-            border-color: var(--neon-blue);
-        }
-
-        .scan-cell.target {
-            background: rgba(255, 62, 62, 0.2);
-            border-color: var(--neon-red);
-        }
-
-        .scan-cell.found {
-            background: rgba(0, 255, 157, 0.2);
-            border-color: var(--neon-green);
-        }
-
-        .scan-cell.failed {
-            background: rgba(255, 62, 62, 0.4);
-            border-color: var(--neon-red);
-        }
-
-        .code-game {
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-        }
-
-        .code-display {
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            color: var(--neon-green);
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-        }
-
-        .code-input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--neon-blue);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .sequence-game {
-            margin: 20px 0;
-        }
-
-        .sequence-item {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            margin: 5px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sequence-item.active {
-            border-color: var(--neon-blue);
-            background: rgba(0, 168, 255, 0.2);
-        }
-
-        .timer {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--neon-blue);
-            margin: 15px 0;
-        }
-
-        .notification {
-            position: fixed;
-            top: 70px;
-            right: 10px;
-            background: var(--panel-bg);
-            border-left: 4px solid var(--neon-blue);
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-            max-width: 300px;
-            display: none;
-            z-index: 1000;
-        }
-
-        .hacking-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 15, 25, 0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            flex-direction: column;
-        }
-
-        .matrix-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Courier New', monospace;
-            color: var(--neon-green);
-            pointer-events: none;
-            opacity: 0.3;
+            font-size: 14px;
         }
 
         .progress-bar {
-            width: 80%;
-            height: 10px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            margin: 20px 0;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--neon-blue);
-            border-radius: 5px;
-            width: 0%;
-            transition: width 0.3s;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
 
-        .button {
-            background: var(--neon-blue);
-            color: white;
-            border: none;
+        /* Upgrade Items */
+        .upgrade-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+        }
+
+        .upgrade-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .upgrade-info {
+            flex: 1;
+        }
+
+        .upgrade-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upgrade-level {
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .upgrade-cost {
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 20px;
             padding: 8px 15px;
-            border-radius: 5px;
+            font-weight: 600;
+            color: var(--primary);
+            white-space: nowrap;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
         }
 
-        .button:hover {
-            background: #0095e0;
-            box-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
-        }
-
-        .button:disabled {
-            background: #555;
+        .upgrade-cost.disabled {
+            opacity: 0.5;
             cursor: not-allowed;
-            box-shadow: none;
         }
 
-        .tg-button {
-            background: var(--neon-purple);
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px 20px;
+            z-index: 1000;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            animation: slideDown 0.4s ease, fadeOut 0.4s ease 2.6s forwards;
+            max-width: 90%;
         }
 
-        .tg-button:hover {
-            background: #8a3ffb;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hacking Animation */
+        .hacking-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 31, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .hacking-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+
+        .terminal {
+            background: #000;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+            animation: typewriter 0.1s steps(40) forwards;
+            opacity: 0;
+        }
+
+        @keyframes typewriter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cooldown and Timer */
+        .cooldown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .mission-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tab {
+                font-size: 10px;
+            }
+            
+            .nav-tab i {
+                font-size: 18px;
+            }
+        }
+
+        /* Security Warning */
+        .security-warning {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: var(--danger);
+            text-align: center;
+        }
+
+        /* Achievement Styles */
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .achievement-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.locked {
+            opacity: 0.6;
+        }
+
+        .achievement-card.claimed {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .achievement-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .achievement-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .achievement-reward {
+            font-size: 10px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .achievement-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .achievement-progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        /* Shop Items */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .shop-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .shop-item:hover {
+            border-color: var(--primary);
+        }
+
+        .shop-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .shop-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .shop-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .shop-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-tag {
+            background: rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Equipment Items */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .equipment-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .equipment-item.equipped {
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .equipment-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .equipment-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .equipment-stats {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .equipment-level {
+            font-size: 10px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Tabs */
+        .sub-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            margin: 10px 0;
+        }
+
+        .sub-tab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .sub-tab.active {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary);
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="loading-screen" id="loading-screen">
-        <div class="loading-spinner"></div>
-        <div>Инициализация NeuroNet...</div>
-    </div>
-
-    <div class="container" id="game-container">
+    <div class="app-container">
+        <!-- Header -->
         <div class="header">
-            <div class="logo">
-                <div class="logo-icon">NN</div>
-                <div class="logo-text">NEURONET</div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div>⚡ Энергия</div>
+                    <div class="stat-value" id="energyValue">100/100</div>
+                    <div class="energy-bar">
+                        <div class="energy-fill" id="energyFill" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div>💰 Крипто</div>
+                    <div class="stat-value" id="cryptoValue">0</div>
+                    <div style="font-size: 12px; color: var(--text-secondary)">coins</div>
+                </div>
+                <div class="stat-item">
+                    <div>🎮 Уровень</div>
+                    <div class="stat-value" id="levelValue">1</div>
+                    <div class="energy-bar">
+                        <div class="progress-fill" id="expFill" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
-            <div class="user-info">
-                <div class="user-avatar" id="user-avatar">H</div>
-                <div>
-                    <div id="username">HACKER_01</div>
-                    <div style="font-size: 0.8rem; color: #a0a0a0;">LEVEL <span id="user-level">1</span></div>
+
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-tab="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </div>
+                <div class="nav-tab" data-tab="missions">
+                    <i class="fas fa-tasks"></i>
+                    <span>Миссии</span>
+                </div>
+                <div class="nav-tab" data-tab="skills">
+                    <i class="fas fa-cogs"></i>
+                    <span>Навыки</span>
+                </div>
+                <div class="nav-tab" data-tab="inventory">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Инвентарь</span>
+                </div>
+                <div class="nav-tab" data-tab="achievements">
+                    <i class="fas fa-trophy"></i>
+                    <span>Достижения</span>
                 </div>
             </div>
         </div>
 
-        <!-- Быстрые действия -->
-        <div class="quick-actions">
-            <div class="quick-action" onclick="quickAction('energy')">
-                <i class="fas fa-bolt"></i>
-                <div>Энергия</div>
-            </div>
-            <div class="quick-action" onclick="quickAction('missions')">
-                <i class="fas fa-tasks"></i>
-                <div>Миссии</div>
-            </div>
-            <div class="quick-action" onclick="quickAction('hack')">
-                <i class="fas fa-terminal"></i>
-                <div>Взлом</div>
-            </div>
-            <div class="quick-action" onclick="quickAction('shop')">
-                <i class="fas fa-shopping-cart"></i>
-                <div>Магазин</div>
-            </div>
-            <div class="quick-action" onclick="quickAction('mining')">
-                <i class="fas fa-coins"></i>
-                <div>Майнинг</div>
-            </div>
-            <div class="quick-action" onclick="shareGame()">
-                <i class="fas fa-share"></i>
-                <div>Поделиться</div>
-            </div>
-        </div>
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Dashboard Screen -->
+            <div id="dashboard" class="screen active">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">👤 Ваш профиль</div>
+                        <div class="stat-value" id="playerRank">Новичок</div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-name">💻 Взлом</div>
+                            <div class="stat-value" id="statHack">1</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-name">👻 Стелс</div>
+                            <div class="stat-value" id="statStealth">1</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-name">🔍 Аналитика</div>
+                            <div class="stat-value" id="statAnalytics">1</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-name">⚡ Скорость</div>
+                            <div class="stat-value" id="statSpeed">1</div>
+                        </div>
+                    </div>
 
-        <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-value" id="credits">0.00001000₿</div>
-                <div class="stat-label">КРИПТОБАЛАНС</div>
-                <div class="stat-progress" id="credits-progress"></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="reputation">0</div>
-                <div class="stat-label">РЕПУТАЦИЯ</div>
-                <div class="stat-progress" id="reputation-progress"></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="energy">100</div>
-                <div class="stat-label">ЭНЕРГИЯ</div>
-                <div class="stat-progress" id="energy-progress"></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="notoriety">0%</div>
-                <div class="stat-label">ИЗВЕСТНОСТЬ</div>
-                <div class="stat-progress" id="notoriety-progress"></div>
-            </div>
-        </div>
-
-        <!-- Баннер события -->
-        <div class="event-banner" id="event-banner" style="display: none;">
-            <h3><i class="fas fa-star"></i> СПЕЦИАЛЬНОЕ СОБЫТИЕ</h3>
-            <p id="event-text">x2 награды за все миссии!</p>
-            <div class="timer" id="event-timer">23:59:59</div>
-        </div>
-
-        <div class="nav-tabs">
-            <div class="nav-tab active" data-tab="terminal">
-                <i class="fas fa-terminal"></i>
-                <span>Терминал</span>
-            </div>
-            <div class="nav-tab" data-tab="missions">
-                <i class="fas fa-tasks"></i>
-                <span>Миссии</span>
-            </div>
-            <div class="nav-tab" data-tab="minigames">
-                <i class="fas fa-gamepad"></i>
-                <span>Взлом</span>
-            </div>
-            <div class="nav-tab" data-tab="shop">
-                <i class="fas fa-shopping-cart"></i>
-                <span>Магазин</span>
-            </div>
-            <div class="nav-tab" data-tab="upgrades">
-                <i class="fas fa-microchip"></i>
-                <span>Улучшения</span>
-            </div>
-            <div class="nav-tab" data-tab="inventory">
-                <i class="fas fa-briefcase"></i>
-                <span>Инвентарь</span>
-            </div>
-        </div>
-
-        <!-- Содержимое вкладок остается таким же, но с добавлением новых функций -->
-        <div class="tab-content active" id="terminal-tab">
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">СИСТЕМНЫЙ ТЕРМИНАЛ</div>
-                    <div style="color: var(--neon-green); font-size: 0.9rem;">ONLINE</div>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Опыт до след. уровня</span>
+                            <span id="expText">0/100</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="expProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <div>neuro://terminal/root</div>
-                        <div>ENCRYPTED CONNECTION</div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">🎯 Быстрые действия</div>
                     </div>
-                    <div class="terminal-output" id="output">
-                        <div>> Инициализация NeuroNet...</div>
-                        <div>> Подключение к скрытой сети...</div>
-                        <div>> Аутентификация...</div>
-                        <div>> Добро пожаловать в NeuroNet, хакер.</div>
-                        <div>> Введите 'help' для списка команд.</div>
+                    
+                    <button class="btn" id="dailyMissionBtn" onclick="startDailyMission()">
+                        <i class="fas fa-calendar-day"></i> Ежедневная миссия
+                        <div id="dailyCooldown"></div>
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="showScreen('missions')">
+                        <i class="fas fa-tasks"></i> Все миссии
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="showScreen('skills')">
+                        <i class="fas fa-cogs"></i> Прокачка навыков
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">📈 Активность</div>
                     </div>
-                    <div class="terminal-input">
-                        <span class="prompt">root@neuro:~#</span>
-                        <input type="text" id="command-input" autocomplete="off" placeholder="Введите команду...">
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Выполнено миссий</span>
+                            <span id="completedMissions">0</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="missionsProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Общий доход</span>
+                            <span id="totalEarned">0 крипто</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Следующее восстановление энергии</span>
+                            <span id="nextEnergyRestore">00:00</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Missions Screen -->
+            <div id="missions" class="screen">
+                <div class="sub-tabs">
+                    <div class="sub-tab active" data-subtab="regular">Обычные миссии</div>
+                    <div class="sub-tab" data-subtab="special">Спецоперации</div>
+                    <div class="sub-tab" data-subtab="elite">Элитные миссии</div>
+                </div>
+
+                <div id="regularMissions" class="mission-subtab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🎯 Обычные миссии</div>
+                            <div class="stat-value" id="availableMissions">0</div>
+                        </div>
+                        
+                        <div class="mission-grid" id="missionsGrid">
+                            <!-- Missions will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="specialMissions" class="mission-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🏆 Спецоперации</div>
+                        </div>
+                        
+                        <div class="mission-grid" id="specialMissionsGrid">
+                            <!-- Special missions will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="eliteMissions" class="mission-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">💎 Элитные миссии</div>
+                        </div>
+                        
+                        <div class="mission-grid" id="eliteMissionsGrid">
+                            <!-- Elite missions will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Screen -->
+            <div id="skills" class="screen">
+                <div class="sub-tabs">
+                    <div class="sub-tab active" data-subtab="skills">Навыки</div>
+                    <div class="sub-tab" data-subtab="equipment">Оборудование</div>
+                    <div class="sub-tab" data-subtab="upgrades">Улучшения</div>
+                </div>
+
+                <div id="skillsTab" class="skills-subtab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">⚡ Улучшение навыков</div>
+                            <div class="stat-value" id="skillPoints">0</div>
+                        </div>
+                        
+                        <div id="skillsList">
+                            <!-- Skills will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="equipmentTab" class="skills-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🔧 Улучшения оборудования</div>
+                        </div>
+                        
+                        <div class="equipment-grid" id="equipmentList">
+                            <!-- Equipment will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upgradesTab" class="skills-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🚀 Специальные улучшения</div>
+                        </div>
+                        
+                        <div id="upgradesList">
+                            <!-- Upgrades will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Screen -->
+            <div id="inventory" class="screen">
+                <div class="sub-tabs">
+                    <div class="sub-tab active" data-subtab="inventory">Инвентарь</div>
+                    <div class="sub-tab" data-subtab="shop">Магазин</div>
+                    <div class="sub-tab" data-subtab="crafting">Крафтинг</div>
+                </div>
+
+                <div id="inventoryTab" class="inventory-subtab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🎒 Инвентарь</div>
+                            <div class="stat-value" id="inventorySlots">0/50</div>
+                        </div>
+                        
+                        <div class="shop-grid" id="inventoryGrid">
+                            <!-- Inventory items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="shopTab" class="inventory-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🛒 Магазин</div>
+                        </div>
+                        
+                        <div class="shop-grid" id="shopItems">
+                            <!-- Shop items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="craftingTab" class="inventory-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🔨 Крафтинг</div>
+                        </div>
+                        
+                        <div id="craftingRecipes">
+                            <!-- Crafting recipes will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Screen -->
+            <div id="achievements" class="screen">
+                <div class="sub-tabs">
+                    <div class="sub-tab active" data-subtab="progress">Прогресс</div>
+                    <div class="sub-tab" data-subtab="missions">Миссии</div>
+                    <div class="sub-tab" data-subtab="combat">Боевые</div>
+                    <div class="sub-tab" data-subtab="economy">Экономика</div>
+                    <div class="sub-tab" data-subtab="special">Особые</div>
+                </div>
+
+                <div id="progressAchievements" class="achievement-subtab">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">📈 Достижения прогресса</div>
+                            <div class="stat-value" id="progressAchievementsCount">0/25</div>
+                        </div>
+                        
+                        <div class="achievement-grid" id="progressAchievementsGrid">
+                            <!-- Progress achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="missionsAchievements" class="achievement-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🎯 Миссионерские достижения</div>
+                            <div class="stat-value" id="missionsAchievementsCount">0/25</div>
+                        </div>
+                        
+                        <div class="achievement-grid" id="missionsAchievementsGrid">
+                            <!-- Mission achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="combatAchievements" class="achievement-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">⚔️ Боевые достижения</div>
+                            <div class="stat-value" id="combatAchievementsCount">0/25</div>
+                        </div>
+                        
+                        <div class="achievement-grid" id="combatAchievementsGrid">
+                            <!-- Combat achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="economyAchievements" class="achievement-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">💰 Экономические достижения</div>
+                            <div class="stat-value" id="economyAchievementsCount">0/25</div>
+                        </div>
+                        
+                        <div class="achievement-grid" id="economyAchievementsGrid">
+                            <!-- Economy achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="specialAchievements" class="achievement-subtab" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">🌟 Особые достижения</div>
+                            <div class="stat-value" id="specialAchievementsCount">0/25</div>
+                        </div>
+                        
+                        <div class="achievement-grid" id="specialAchievementsGrid">
+                            <!-- Special achievements will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hacking Overlay -->
+    <div id="hackingOverlay" class="hacking-overlay" style="display: none;">
+        <div class="hacking-text" id="hackingText">⚡ ВЗЛОМ ПРОГРЕСС... ⚡</div>
+        <div class="terminal" id="terminal">
+            <!-- Terminal output will be added by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Game Data with protection
+        const gameState = {
+            level: 1,
+            exp: 0,
+            energy: 100,
+            maxEnergy: 100,
+            crypto: 500,
+            bitcoins: 0,
+            darkcoins: 0,
+            completedMissions: 0,
+            totalEarned: 0,
+            totalSpent: 0,
             
-            <!-- Цепочка квестов -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">ЦЕПОЧКА КВЕСТОВ</div>
-                    <div style="color: var(--neon-purple); font-size: 0.9rem;">НОВАЯ</div>
-                </div>
-                <div class="quest-chain" id="quest-chain">
-                    <!-- Квесты будут загружены через JS -->
-                </div>
-            </div>
+            // Skills
+            hack: 1,
+            stealth: 1,
+            analytics: 1,
+            speed: 1,
+            firewall: 1,
+            energyCapacity: 1,
+            cryptoMining: 1,
+            socialEngineering: 1,
+            zeroDay: 1,
+            botnet: 1,
+            
+            // Equipment
+            equipment: {
+                cpu: { level: 1, equipped: true },
+                gpu: { level: 1, equipped: true },
+                ram: { level: 1, equipped: true },
+                storage: { level: 1, equipped: true },
+                network: { level: 1, equipped: true },
+                vpn: { level: 0, equipped: false },
+                antivirus: { level: 0, equipped: false },
+                firewall: { level: 0, equipped: false },
+                encryption: { level: 0, equipped: false },
+                anonymizer: { level: 0, equipped: false }
+            },
+            
+            // Inventory
+            inventory: [],
+            skillPoints: 5,
+            upgradePoints: 0,
+            
+            // Timers and cooldowns
+            lastEnergyUpdate: null,
+            lastDailyMission: null,
+            missionCooldowns: {},
+            itemCooldowns: {},
+            lastReconMission: null,
+            
+            // Achievements
+            achievements: {},
+            stats: {
+                missionsCompleted: 0,
+                specialMissionsCompleted: 0,
+                eliteMissionsCompleted: 0,
+                itemsCrafted: 0,
+                itemsPurchased: 0,
+                skillsUpgraded: 0,
+                equipmentUpgraded: 0,
+                cryptoMined: 0,
+                successfulHacks: 0,
+                failedHacks: 0,
+                consecutiveSuccesses: 0,
+                maxConsecutiveSuccesses: 0,
+                totalPlayTime: 0,
+                loginDays: 1,
+                lastLogin: null
+            },
+            
+            // Security
+            lastServerTime: null,
+            cheatAttempts: 0
+        };
 
-            <!-- Ежедневные испытания -->
-            <div class="panel">
-                <div class="panel-header">
-                    <div class="panel-title">ЕЖЕДНЕВНЫЕ ИСПЫТАНИЯ</div>
-                    <div style="color: var(--neon-yellow); font-size: 0.9rem;" id="daily-reset"></div>
-                </div>
-                <div class="daily-challenges" id="daily-challenges">
-                    <!-- Испытания будут загружены через JS -->
-                </div>
-            </div>
-        </div>
+        // Calculate required experience for level (increasing with each level)
+        function getRequiredExp(level) {
+            return Math.floor(100 * Math.pow(1.15, level - 1));
+        }
 
-        <!-- Остальное содержимое вкладок... -->
+        // Missions Data - 30+ different missions
+        const missions = [
+            // Regular Missions (15)
+            { id: 1, name: "Сканирование сети", description: "Разведка периметра безопасности", energy: 10, level: 1, exp: 15, crypto: 5, chance: 0.8, type: "recon", icon: "fa-search", cooldown: 0, category: "regular" },
+            { id: 2, name: "Взлом серверов", description: "Проникновение в базу данных", energy: 25, level: 3, exp: 40, crypto: 15, chance: 0.6, type: "hack", icon: "fa-server", cooldown: 300000, category: "regular" },
+            { id: 3, name: "Саботаж системы", description: "Вывод из строя ключевых серверов", energy: 40, level: 5, exp: 70, crypto: 30, chance: 0.4, type: "sabotage", icon: "fa-bomb", cooldown: 600000, category: "regular" },
+            { id: 4, name: "Кража данных", description: "Извлечение конфиденциальной информации", energy: 30, level: 2, exp: 50, crypto: 20, chance: 0.5, type: "steal", icon: "fa-file-invoice", cooldown: 300000, category: "regular" },
+            { id: 5, name: "Дезинформация", description: "Внедрение ложных данных в систему", energy: 20, level: 1, exp: 25, crypto: 10, chance: 0.7, type: "disinfo", icon: "fa-comment-slash", cooldown: 180000, category: "regular" },
+            { id: 6, name: "Фишинг атака", description: "Сбор учетных данных сотрудников", energy: 15, level: 2, exp: 30, crypto: 12, chance: 0.65, type: "phishing", icon: "fa-fish", cooldown: 240000, category: "regular" },
+            { id: 7, name: "DDoS атака", description: "Перегрузка корпоративных серверов", energy: 35, level: 4, exp: 60, crypto: 25, chance: 0.55, type: "ddos", icon: "fa-network-wired", cooldown: 480000, category: "regular" },
+            { id: 8, name: "Крипто-майнинг", description: "Незаконное использование мощностей", energy: 50, level: 6, exp: 90, crypto: 40, chance: 0.35, type: "mining", icon: "fa-coins", cooldown: 900000, category: "regular" },
+            { id: 9, name: "Шпионаж", description: "Наблюдение за ключевыми лицами", energy: 25, level: 3, exp: 45, crypto: 18, chance: 0.6, type: "spy", icon: "fa-user-secret", cooldown: 360000, category: "regular" },
+            { id: 10, name: "Бэкдор", description: "Создание скрытого доступа", energy: 45, level: 5, exp: 80, crypto: 35, chance: 0.45, type: "backdoor", icon: "fa-door-open", cooldown: 720000, category: "regular" },
+            { id: 11, name: "Анализ уязвимостей", description: "Поиск слабых мест в защите", energy: 20, level: 2, exp: 35, crypto: 15, chance: 0.75, type: "scan", icon: "fa-shield-virus", cooldown: 180000, category: "regular" },
+            { id: 12, name: "Социальная инженерия", description: "Манипуляция персоналом", energy: 30, level: 4, exp: 55, crypto: 22, chance: 0.5, type: "social", icon: "fa-users", cooldown: 300000, category: "regular" },
+            { id: 13, name: "Обход защиты", description: "Преодоление систем безопасности", energy: 40, level: 6, exp: 75, crypto: 32, chance: 0.4, type: "bypass", icon: "fa-unlock", cooldown: 600000, category: "regular" },
+            { id: 14, name: "Кража идентичности", description: "Взлом учетных записей", energy: 35, level: 5, exp: 65, crypto: 28, chance: 0.45, type: "identity", icon: "fa-id-card", cooldown: 480000, category: "regular" },
+            { id: 15, name: "Шантаж", description: "Вымогательство конфиденциальных данных", energy: 60, level: 7, exp: 100, crypto: 50, chance: 0.3, type: "blackmail", icon: "fa-money-bill-wave", cooldown: 1200000, category: "regular" },
+            
+            // Special Missions (10)
+            { id: 16, name: "Оборона базы", description: "Защита от контратаки Омникорп", energy: 80, level: 10, exp: 200, crypto: 150, chance: 0.25, type: "defense", icon: "fa-shield-alt", cooldown: 1800000, category: "special", specialReward: "firewall" },
+            { id: 17, name: "Кибер-рейд", description: "Координированная атака на сервера", energy: 100, level: 12, exp: 250, crypto: 200, chance: 0.2, type: "raid", icon: "fa-users", cooldown: 3600000, category: "special", specialReward: "botnet" },
+            { id: 18, name: "Взлом банка", description: "Проникновение в финансовую систему", energy: 120, level: 15, exp: 350, crypto: 300, chance: 0.15, type: "bank", icon: "fa-university", cooldown: 7200000, category: "special", specialReward: "crypto" },
+            { id: 19, name: "Шпионаж за CEO", description: "Слежка за руководством Омникорп", energy: 90, level: 11, exp: 220, crypto: 180, chance: 0.22, type: "spy", icon: "fa-user-tie", cooldown: 2400000, category: "special", specialReward: "intel" },
+            { id: 20, name: "Кража чертежей", description: "Похищение технологических планов", energy: 110, level: 13, exp: 280, crypto: 240, chance: 0.18, type: "steal", icon: "fa-blueprint", cooldown: 4800000, category: "special", specialReward: "blueprint" },
+            { id: 21, name: "Атака на ИИ", description: "Взлом искусственного интеллекта", energy: 150, level: 18, exp: 450, crypto: 400, chance: 0.1, type: "ai", icon: "fa-robot", cooldown: 10800000, category: "special", specialReward: "ai_module" },
+            { id: 22, name: "Крипто-экспроприация", description: "Массовый перевод средств", energy: 130, level: 16, exp: 380, crypto: 350, chance: 0.12, type: "crypto", icon: "fa-money-bill-transfer", cooldown: 9000000, category: "special", specialReward: "bitcoin" },
+            { id: 23, name: "Подрыв репутации", description: "Компромат на ключевых лиц", energy: 70, level: 9, exp: 180, crypto: 120, chance: 0.3, type: "discredit", icon: "fa-comment-dots", cooldown: 1200000, category: "special", specialReward: "leverage" },
+            { id: 24, name: "Захват спутника", description: "Контроль над коммуникациями", energy: 140, level: 17, exp: 420, crypto: 380, chance: 0.11, type: "satellite", icon: "fa-satellite", cooldown: 9600000, category: "special", specialReward: "satellite_access" },
+            { id: 25, name: "Нейтрализация охраны", description: "Отключение систем безопасности", energy: 95, level: 14, exp: 240, crypto: 200, chance: 0.2, type: "neutralize", icon: "fa-user-shield", cooldown: 3000000, category: "special", specialReward: "security_pass" },
+            
+            // Elite Missions (10)
+            { id: 26, name: "Крах Омникорп", description: "Полное уничтожение корпорации", energy: 500, level: 25, exp: 1000, crypto: 1000, chance: 0.05, type: "destroy", icon: "fa-skull-crossbones", cooldown: 86400000, category: "elite", specialReward: "freedom" },
+            { id: 27, name: "Создание утопии", description: "Установление нового мирового порядка", energy: 400, level: 22, exp: 800, crypto: 800, chance: 0.07, type: "utopia", icon: "fa-globe", cooldown: 43200000, category: "elite", specialReward: "influence" },
+            { id: 28, name: "Квантовый взлом", description: "Использование квантовых компьютеров", energy: 350, level: 20, exp: 700, crypto: 700, chance: 0.08, type: "quantum", icon: "fa-atom", cooldown: 28800000, category: "elite", specialReward: "quantum_chip" },
+            { id: 29, name: "Манипуляция рынком", description: "Контроль над мировой экономикой", energy: 300, level: 19, exp: 600, crypto: 600, chance: 0.09, type: "market", icon: "fa-chart-line", cooldown: 21600000, category: "elite", specialReward: "market_control" },
+            { id: 30, name: "Восстание машин", description: "Активация скрытых ботнетов", energy: 450, level: 24, exp: 900, crypto: 900, chance: 0.06, type: "uprising", icon: "fa-microchip", cooldown: 64800000, category: "elite", specialReward: "ai_army" },
+            { id: 31, name: "Темный интернет", description: "Создание собственной сети", energy: 320, level: 21, exp: 650, crypto: 650, chance: 0.085, type: "darknet", icon: "fa-network-wired", cooldown: 25200000, category: "elite", specialReward: "darknet_access" },
+            { id: 32, name: "Кибер-иммунитет", description: "Защита от всех видов атак", energy: 280, level: 18, exp: 550, crypto: 550, chance: 0.1, type: "immunity", icon: "fa-shield-virus", cooldown: 18000000, category: "elite", specialReward: "total_immunity" },
+            { id: 33, name: "Виртуальная реальность", description: "Создание альтернативной реальности", energy: 380, level: 23, exp: 750, crypto: 750, chance: 0.075, type: "vr", icon: "fa-vr-cardboard", cooldown: 32400000, category: "elite", specialReward: "vr_world" },
+            { id: 34, name: "Глобальный шпионаж", description: "Доступ ко всем системам мира", energy: 420, level: 26, exp: 850, crypto: 850, chance: 0.065, type: "global", icon: "fa-eye", cooldown: 72000000, category: "elite", specialReward: "omniscience" },
+            { id: 35, name: "Апгрейд человечества", description: "Кибернетические улучшения", energy: 480, level: 28, exp: 950, crypto: 950, chance: 0.055, type: "upgrade", icon: "fa-user-astronaut", cooldown: 79200000, category: "elite", specialReward: "cyber_enhancement" }
+        ];
 
-    </div>
+        // Skills Data - 20+ skills
+        const skills = [
+            { id: "hack", name: "Взлом", description: "Увеличивает шанс успеха миссий", icon: "fa-laptop-code", cost: level => Math.floor(50 * Math.pow(1.2, level - 1)), maxLevel: 50, effect: level => level * 0.02 },
+            { id: "stealth", name: "Стелс", description: "Снижает обнаружение при провале", icon: "fa-user-ninja", cost: level => Math.floor(50 * Math.pow(1.2, level - 1)), maxLevel: 50, effect: level => level * 0.015 },
+            { id: "analytics", name: "Аналитика", description: "Увеличивает награды за миссии", icon: "fa-chart-line", cost: level => Math.floor(50 * Math.pow(1.2, level - 1)), maxLevel: 50, effect: level => level * 0.01 },
+            { id: "speed", name: "Скорость", description: "Сокращает время выполнения миссий", icon: "fa-bolt", cost: level => Math.floor(50 * Math.pow(1.2, level - 1)), maxLevel: 50, effect: level => level * 0.005 },
+            { id: "energyCapacity", name: "Емкость энергии", description: "Увеличивает максимальную энергию", icon: "fa-battery-full", cost: level => Math.floor(30 * Math.pow(1.15, level - 1)), maxLevel: 30, effect: level => level * 10 },
+            { id: "firewall", name: "Обход защиты", description: "Позволяет брать сложные миссии", icon: "fa-fire", cost: level => Math.floor(75 * Math.pow(1.25, level - 1)), maxLevel: 20, effect: level => level * 0.5 },
+            { id: "cryptoMining", name: "Крипто-майнинг", description: "Пассивный доход криптовалюты", icon: "fa-digging", cost: level => Math.floor(100 * Math.pow(1.3, level - 1)), maxLevel: 15, effect: level => level * 2 },
+            { id: "socialEngineering", name: "Социальная инженерия", description: "Увеличивает шанс успеха социальных атак", icon: "fa-users", cost: level => Math.floor(60 * Math.pow(1.2, level - 1)), maxLevel: 25, effect: level => level * 0.025 },
+            { id: "zeroDay", name: "Zero-Day уязвимости", description: "Доступ к эксклюзивным миссиям", icon: "fa-bug", cost: level => Math.floor(150 * Math.pow(1.4, level - 1)), maxLevel: 10, effect: level => level * 1 },
+            { id: "botnet", name: "Ботнет", description: "Увеличивает мощность атак DDoS", icon: "fa-network-wired", cost: level => Math.floor(120 * Math.pow(1.35, level - 1)), maxLevel: 12, effect: level => level * 0.03 },
+            { id: "encryption", name: "Шифрование", description: "Защита от обнаружения", icon: "fa-lock", cost: level => Math.floor(80 * Math.pow(1.25, level - 1)), maxLevel: 20, effect: level => level * 0.02 },
+            { id: "ai", name: "Искусственный интеллект", description: "Автоматизация простых миссий", icon: "fa-robot", cost: level => Math.floor(200 * Math.pow(1.5, level - 1)), maxLevel: 8, effect: level => level * 0.1 },
+            { id: "quantum", name: "Квантовые вычисления", description: "Ускоряет все процессы", icon: "fa-atom", cost: level => Math.floor(300 * Math.pow(1.6, level - 1)), maxLevel: 5, effect: level => level * 0.15 },
+            { id: "blockchain", name: "Блокчейн", description: "Неизменяемость данных", icon: "fa-link", cost: level => Math.floor(90 * Math.pow(1.3, level - 1)), maxLevel: 15, effect: level => level * 0.025 },
+            { id: "darkweb", name: "Темная сеть", description: "Доступ к эксклюзивным товарам", icon: "fa-mask", cost: level => Math.floor(110 * Math.pow(1.35, level - 1)), maxLevel: 10, effect: level => level * 0.5 },
+            { id: "cyberwarfare", name: "Кибервойна", description: "Урон по вражеским системам", icon: "fa-crosshairs", cost: level => Math.floor(130 * Math.pow(1.4, level - 1)), maxLevel: 12, effect: level => level * 0.04 },
+            { id: "dataAnalysis", name: "Анализ данных", description: "Обнаружение скрытых закономерностей", icon: "fa-database", cost: level => Math.floor(70 * Math.pow(1.25, level - 1)), maxLevel: 25, effect: level => level * 0.015 },
+            { id: "neuralNetwork", name: "Нейросети", description: "Предсказание результатов атак", icon: "fa-brain", cost: level => Math.floor(160 * Math.pow(1.45, level - 1)), maxLevel: 8, effect: level => level * 0.08 },
+            { id: "biometrics", name: "Биометрия", description: "Обход биометрической защиты", icon: "fa-fingerprint", cost: level => Math.floor(140 * Math.pow(1.4, level - 1)), maxLevel: 10, effect: level => level * 0.05 },
+            { id: "quantumCryptography", name: "Квантовая криптография", description: "Невзламываемое шифрование", icon: "fa-user-secret", cost: level => Math.floor(250 * Math.pow(1.55, level - 1)), maxLevel: 6, effect: level => level * 0.2 }
+        ];
 
-    <div class="hacking-overlay" id="hacking-overlay">
-        <div class="matrix-effect" id="matrix-effect"></div>
-        <div style="position: relative; z-index: 2001; text-align: center;">
-            <h2 style="color: var(--neon-blue); margin-bottom: 20px;" id="hack-title">ПОДКЛЮЧЕНИЕ К СИСТЕМЕ...</h2>
-            <div class="timer" id="hack-progress">0%</div>
-            <div id="hack-status" style="color: var(--neon-green); margin: 15px 0;"></div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-            <button class="button" onclick="cancelHack()" style="background: var(--neon-red);">
-                <i class="fas fa-times"></i> ПРЕРВАТЬ ВЗЛОМ
-            </button>
-        </div>
-    </div>
+        // Equipment Data - 20+ equipment items
+        const equipment = [
+            { id: "cpu", name: "Процессор", description: "Основная вычислительная мощность", icon: "fa-microchip", baseCost: 100, costMultiplier: 1.5, maxLevel: 50, effect: level => ({ hack: level * 0.5, speed: level * 0.3 }) },
+            { id: "gpu", name: "Видеокарта", description: "Ускорение графических вычислений", icon: "fa-desktop", baseCost: 150, costMultiplier: 1.6, maxLevel: 40, effect: level => ({ cryptoMining: level * 1, analytics: level * 0.2 }) },
+            { id: "ram", name: "Оперативная память", description: "Скорость обработки данных", icon: "fa-memory", baseCost: 80, costMultiplier: 1.4, maxLevel: 60, effect: level => ({ speed: level * 0.5, analytics: level * 0.3 }) },
+            { id: "storage", name: "Накопитель", description: "Хранение данных и инструментов", icon: "fa-hdd", baseCost: 60, costMultiplier: 1.3, maxLevel: 70, effect: level => ({ inventory: level * 2 }) },
+            { id: "network", name: "Сетевая карта", description: "Скорость интернет-соединения", icon: "fa-wifi", baseCost: 120, costMultiplier: 1.5, maxLevel: 45, effect: level => ({ speed: level * 0.4, stealth: level * 0.2 }) },
+            { id: "vpn", name: "VPN", description: "Анонимность в сети", icon: "fa-user-shield", baseCost: 200, costMultiplier: 1.7, maxLevel: 30, effect: level => ({ stealth: level * 0.8 }) },
+            { id: "antivirus", name: "Антивирус", description: "Защита от вредоносных программ", icon: "fa-shield-alt", baseCost: 180, costMultiplier: 1.6, maxLevel: 35, effect: level => ({ firewall: level * 0.5 }) },
+            { id: "firewall", name: "Фаервол", description: "Защита от внешних атак", icon: "fa-fire", baseCost: 220, costMultiplier: 1.8, maxLevel: 25, effect: level => ({ firewall: level * 1 }) },
+            { id: "encryption", name: "Шифрование", description: "Защита передаваемых данных", icon: "fa-lock", baseCost: 160, costMultiplier: 1.6, maxLevel: 40, effect: level => ({ stealth: level * 0.5, encryption: level * 0.5 }) },
+            { id: "anonymizer", name: "Анонимайзер", description: "Полная анонимность", icon: "fa-mask", baseCost: 300, costMultiplier: 2, maxLevel: 20, effect: level => ({ stealth: level * 1.5 }) },
+            { id: "quantumProcessor", name: "Квантовый процессор", description: "Сверхбыстрые вычисления", icon: "fa-atom", baseCost: 1000, costMultiplier: 2.5, maxLevel: 10, effect: level => ({ hack: level * 2, speed: level * 1.5, analytics: level * 1 }) },
+            { id: "neuralAccelerator", name: "Нейроускоритель", description: "Ускорение ИИ-алгоритмов", icon: "fa-brain", baseCost: 800, costMultiplier: 2.2, maxLevel: 12, effect: level => ({ ai: level * 1, analytics: level * 0.8 }) },
+            { id: "cryptoMiner", name: "Крипто-майнер", description: "Специализированное оборудование", icon: "fa-coins", baseCost: 400, costMultiplier: 1.9, maxLevel: 15, effect: level => ({ cryptoMining: level * 3 }) },
+            { id: "satelliteDish", name: "Спутниковая антенна", description: "Прямой доступ к спутникам", icon: "fa-satellite-dish", baseCost: 600, costMultiplier: 2.1, maxLevel: 8, effect: level => ({ speed: level * 0.8, zeroDay: level * 0.5 }) },
+            { id: "darknetRouter", name: "Darknet роутер", description: "Доступ к темной сети", icon: "fa-route", baseCost: 500, costMultiplier: 2, maxLevel: 10, effect: level => ({ darkweb: level * 1, stealth: level * 0.7 }) },
+            { id: "biometricScanner", name: "Биометрический сканер", description: "Обход биометрической защиты", icon: "fa-fingerprint", baseCost: 350, costMultiplier: 1.8, maxLevel: 15, effect: level => ({ biometrics: level * 0.8 }) },
+            { id: "quantumEncryptor", name: "Квантовый шифратор", description: "Невзламываемое шифрование", icon: "fa-user-secret", baseCost: 1200, costMultiplier: 2.8, maxLevel: 5, effect: level => ({ encryption: level * 2, quantumCryptography: level * 1 }) },
+            { id: "aiCore", name: "Ядро ИИ", description: "Мощный искусственный интеллект", icon: "fa-robot", baseCost: 1500, costMultiplier: 3, maxLevel: 5, effect: level => ({ ai: level * 2, neuralNetwork: level * 1.5 }) },
+            { id: "cyberdeck", name: "Кибердека", description: "Портативный хакерский терминал", icon: "fa-laptop", baseCost: 700, costMultiplier: 2.2, maxLevel: 8, effect: level => ({ hack: level * 0.8, speed: level * 0.6, mobility: level * 1 }) },
+            { id: "nanobotSwarm", name: "Рой наноботов", description: "Микроскопические хакерские инструменты", icon: "fa-bacteria", baseCost: 900, costMultiplier: 2.4, maxLevel: 6, effect: level => ({ stealth: level * 1.2, zeroDay: level * 0.8 }) }
+        ];
 
-    <div class="notification" id="notification">
-        <div style="font-weight: bold; margin-bottom: 5px;">УВЕДОМЛЕНИЕ СИСТЕМЫ</div>
-        <div id="notification-text">Текст уведомления</div>
-    </div>
+        // Shop Items - 30+ items
+        const shopItems = [
+            { id: "energyDrink", name: "Энергетический напиток", description: "Восстанавливает 20 энергии", icon: "fa-battery-full", price: 50, type: "consumable", effect: "energy", value: 20, cooldown: 600000 },
+            { id: "cryptoBooster", name: "Крипто-бустер", description: "+25% к наградам за 1 час", icon: "fa-chart-line", price: 100, type: "consumable", effect: "cryptoBoost", value: 1.25, duration: 3600000, cooldown: 7200000 },
+            { id: "expBooster", name: "Бустер опыта", description: "+30% опыта за 1 час", icon: "fa-star", price: 120, type: "consumable", effect: "expBoost", value: 1.3, duration: 3600000, cooldown: 7200000 },
+            { id: "stealthModule", name: "Модуль stealth", description: "+15% к stealth на 30 минут", icon: "fa-user-ninja", price: 80, type: "consumable", effect: "stealthBoost", value: 1.15, duration: 1800000, cooldown: 3600000 },
+            { id: "hackTool", name: "Инструмент взлома", description: "+20% к взлому на 3 миссии", icon: "fa-laptop-code", price: 150, type: "consumable", effect: "hackBoost", value: 1.2, uses: 3, cooldown: 0 },
+            { id: "firewallBypass", name: "Обход фаервола", description: "Автоматический успех 1 миссии", icon: "fa-fire", price: 300, type: "consumable", effect: "autoSuccess", value: 1, uses: 1, cooldown: 0 },
+            { id: "dataPacket", name: "Пакет данных", description: "Случайный бонус к характеристикам", icon: "fa-database", price: 200, type: "consumable", effect: "randomBoost", value: 1, cooldown: 1800000 },
+            { id: "quantumChip", name: "Квантовый чип", description: "Временное увеличение скорости", icon: "fa-atom", price: 500, type: "consumable", effect: "speedBoost", value: 2, duration: 900000, cooldown: 3600000 },
+            { id: "neuralInterface", name: "Нейроинтерфейс", description: "+10% ко всем навыкам на 1 час", icon: "fa-brain", price: 400, type: "consumable", effect: "allBoost", value: 1.1, duration: 3600000, cooldown: 10800000 },
+            { id: "cryptoKey", name: "Криптографический ключ", description: "Открывает доступ к секретным миссиям", icon: "fa-key", price: 1000, type: "consumable", effect: "unlockMissions", value: 1, cooldown: 86400000 },
+            { id: "energyCore", name: "Энергетическое ядро", description: "Увеличивает максимальную энергию на 50", icon: "fa-bolt", price: 800, type: "permanent", effect: "maxEnergy", value: 50, cooldown: 0 },
+            { id: "skillInjector", name: "Инжектор навыков", description: "+1 очко навыков", icon: "fa-syringe", price: 500, type: "permanent", effect: "skillPoint", value: 1, cooldown: 0 },
+            { id: "upgradeModule", name: "Модуль улучшений", description: "+1 очко улучшений", icon: "fa-cube", price: 750, type: "permanent", effect: "upgradePoint", value: 1, cooldown: 0 },
+            { id: "inventoryExpansion", name: "Расширение инвентаря", description: "+10 слотов инвентаря", icon: "fa-box-open", price: 300, type: "permanent", effect: "inventory", value: 10, cooldown: 0 },
+            { id: "bitcoin", name: "Биткоин", description: "Редкая криптовалюта для особых покупок", icon: "fa-bitcoin", price: 5000, type: "currency", effect: "currency", value: 1, cooldown: 0 },
+            { id: "darkcoin", name: "Дарккоин", description: "Валюта темной сети", icon: "fa-coins", price: 10000, type: "currency", effect: "currency", value: 1, cooldown: 0 },
+            { id: "aiAssistant", name: "ИИ-ассистент", description: "Автоматически выполняет простые миссии", icon: "fa-robot", price: 5000, type: "permanent", effect: "autoMissions", value: 1, cooldown: 0 },
+            { id: "quantumComputer", name: "Квантовый компьютер", description: "Увеличивает мощность всех вычислений", icon: "fa-desktop", price: 10000, type: "permanent", effect: "quantum", value: 1, cooldown: 0 },
+            { id: "cyberImplant", name: "Кибер-имплант", description: "Улучшает когнитивные способности", icon: "fa-user-astronaut", price: 7500, type: "permanent", effect: "cyber", value: 1, cooldown: 0 },
+            { id: "holographicDisplay", name: "Голографический дисплей", description: "Визуализация данных в 3D", icon: "fa-vr-cardboard", price: 3000, type: "permanent", effect: "hologram", value: 1, cooldown: 0 },
+            { id: "neuralLink", name: "Нейролинк", description: "Прямое подключение к сети", icon: "fa-link", price: 6000, type: "permanent", effect: "neural", value: 1, cooldown: 0 },
+            { id: "quantumRouter", name: "Квантовый роутер", description: "Мгновенная передача данных", icon: "fa-wifi", price: 4000, type: "permanent", effect: "quantumNetwork", value: 1, cooldown: 0 },
+            { id: "cryptoWallet", name: "Крипто-кошелек", description: "Безопасное хранение криптовалюты", icon: "fa-wallet", price: 1500, type: "permanent", effect: "cryptoStorage", value: 1, cooldown: 0 },
+            { id: "dataVault", name: "Хранилище данных", description: "Защищенное хранение информации", icon: "fa-database", price: 2000, type: "permanent", effect: "dataStorage", value: 1, cooldown: 0 },
+            { id: "stealthSuit", name: "Стелс-костюм", description: "Полная невидимость в сети", icon: "fa-user-secret", price: 8000, type: "permanent", effect: "totalStealth", value: 1, cooldown: 0 },
+            { id: "aiFirewall", name: "ИИ-фаервол", description: "Самообучающаяся система защиты", icon: "fa-shield-alt", price: 7000, type: "permanent", effect: "aiFirewall", value: 1, cooldown: 0 },
+            { id: "quantumEncryption", name: "Квантовое шифрование", description: "Невзламываемое шифрование данных", icon: "fa-lock", price: 9000, type: "permanent", effect: "quantumEncryption", value: 1, cooldown: 0 },
+            { id: "neuralNetwork", name: "Нейросеть", description: "Мощная система анализа данных", icon: "fa-project-diagram", price: 8500, type: "permanent", effect: "neuralNetwork", value: 1, cooldown: 0 },
+            { id: "cyberdeck", name: "Кибердека", description: "Портативный хакерский терминал", icon: "fa-laptop", price: 5000, type: "permanent", effect: "cyberdeck", value: 1, cooldown: 0 },
+            { id: "quantumCore", name: "Квантовое ядро", description: "Мощный процессор для сложных вычислений", icon: "fa-microchip", price: 12000, type: "permanent", effect: "quantumCore", value: 1, cooldown: 0 }
+        ];
 
-    <script src="js/game.js"></script>
-    <script src="js/telegram-integration.js"></script>
-    <script src="js/quests.js"></script>
-    <script src="js/events.js"></script>
+        // Achievements Data - 100+ achievements
+        const achievements = {
+            progress: [
+                { id: "level5", name: "Новичок", description: "Достигнуть 5 уровня", icon: "fa-user", reward: { crypto: 100, skillPoints: 1 }, goal: 5, type: "level" },
+                { id: "level10", name: "Опытный", description: "Достигнуть 10 уровня", icon: "fa-user-graduate", reward: { crypto: 250, skillPoints: 2 }, goal: 10, type: "level" },
+                { id: "level20", name: "Эксперт", description: "Достигнуть 20 уровня", icon: "fa-user-tie", reward: { crypto: 500, skillPoints: 3 }, goal: 20, type: "level" },
+                { id: "level30", name: "Мастер", description: "Достигнуть 30 уровня", icon: "fa-user-ninja", reward: { crypto: 1000, skillPoints: 5 }, goal: 30, type: "level" },
+                { id: "level50", name: "Легенда", description: "Достигнуть 50 уровня", icon: "fa-user-astronaut", reward: { crypto: 2500, skillPoints: 10 }, goal: 50, type: "level" },
+                { id: "level100", name: "Мифический", description: "Достигнуть 100 уровня", icon: "fa-user-god", reward: { crypto: 10000, skillPoints: 20 }, goal: 100, type: "level" },
+                { id: "skill10", name: "Специалист", description: "Прокачать любой навык до 10 уровня", icon: "fa-cogs", reward: { crypto: 200, skillPoints: 2 }, goal: 10, type: "skill" },
+                { id: "skill25", name: "Профессионал", description: "Прокачать любой навык до 25 уровня", icon: "fa-tools", reward: { crypto: 500, skillPoints: 3 }, goal: 25, type: "skill" },
+                { id: "skill50", name: "Виртуоз", description: "Прокачать любой навык до 50 уровня", icon: "fa-magic", reward: { crypto: 1500, skillPoints: 5 }, goal: 50, type: "skill" },
+                { id: "allSkills5", name: "Разносторонний", description: "Прокачать все навыки до 5 уровня", icon: "fa-layer-group", reward: { crypto: 300, skillPoints: 3 }, goal: 5, type: "allSkills" },
+                { id: "allSkills10", name: "Универсал", description: "Прокачать все навыки до 10 уровня", icon: "fa-cube", reward: { crypto: 800, skillPoints: 5 }, goal: 10, type: "allSkills" },
+                { id: "energy100", name: "Энергетик", description: "Иметь 100 максимальной энергии", icon: "fa-bolt", reward: { crypto: 150, skillPoints: 1 }, goal: 100, type: "maxEnergy" },
+                { id: "energy200", name: "Мощный", description: "Иметь 200 максимальной энергии", icon: "fa-battery-full", reward: { crypto: 400, skillPoints: 2 }, goal: 200, type: "maxEnergy" },
+                { id: "energy500", name: "Неутомимый", description: "Иметь 500 максимальной энергии", icon: "fa-plug", reward: { crypto: 1000, skillPoints: 5 }, goal: 500, type: "maxEnergy" },
+                { id: "playTime1", name: "Начало пути", description: "Провести 1 час в игре", icon: "fa-clock", reward: { crypto: 100, skillPoints: 1 }, goal: 3600000, type: "playTime" },
+                { id: "playTime10", name: "Опытный игрок", description: "Провести 10 часов в игре", icon: "fa-hourglass", reward: { crypto: 500, skillPoints: 3 }, goal: 36000000, type: "playTime" },
+                { id: "playTime100", name: "Ветеран", description: "Провести 100 часов в игре", icon: "fa-history", reward: { crypto: 2500, skillPoints: 10 }, goal: 360000000, type: "playTime" },
+                { id: "login7", name: "Преданный", description: "Входить в игру 7 дней подряд", icon: "fa-calendar-day", reward: { crypto: 200, skillPoints: 2 }, goal: 7, type: "loginDays" },
+                { id: "login30", name: "Постоянный клиент", description: "Входить в игру 30 дней подряд", icon: "fa-calendar-week", reward: { crypto: 800, skillPoints: 5 }, goal: 30, type: "loginDays" },
+                { id: "login100", name: "Легендарный", description: "Входить в игру 100 дней подряд", icon: "fa-calendar-month", reward: { crypto: 3000, skillPoints: 15 }, goal: 100, type: "loginDays" },
+                { id: "consecutive5", name: "Неуязвимый", description: "5 успешных миссий подряд", icon: "fa-shield-alt", reward: { crypto: 150, skillPoints: 1 }, goal: 5, type: "consecutiveSuccesses" },
+                { id: "consecutive10", name: "Непобедимый", description: "10 успешных миссий подряд", icon: "fa-shield-virus", reward: { crypto: 300, skillPoints: 2 }, goal: 10, type: "consecutiveSuccesses" },
+                { id: "consecutive20", name: "Безупречный", description: "20 успешных миссий подряд", icon: "fa-crown", reward: { crypto: 700, skillPoints: 4 }, goal: 20, type: "consecutiveSuccesses" },
+                { id: "consecutive50", name: "Бог взлома", description: "50 успешных миссий подряд", icon: "fa-user-god", reward: { crypto: 2000, skillPoints: 10 }, goal: 50, type: "consecutiveSuccesses" },
+                { id: "totalEarned1000", name: "Тысячник", description: "Заработать 1000 крипто", icon: "fa-coins", reward: { crypto: 100, skillPoints: 1 }, goal: 1000, type: "totalEarned" }
+            ],
+            missions: [
+                { id: "missions10", name: "Первый шаг", description: "Выполнить 10 миссий", icon: "fa-flag", reward: { crypto: 50, skillPoints: 1 }, goal: 10, type: "missionsCompleted" },
+                { id: "missions50", name: "Опытный миссионер", description: "Выполнить 50 миссий", icon: "fa-map", reward: { crypto: 200, skillPoints: 2 }, goal: 50, type: "missionsCompleted" },
+                { id: "missions100", name: "Ветеран миссий", description: "Выполнить 100 миссий", icon: "fa-globe", reward: { crypto: 500, skillPoints: 3 }, goal: 100, type: "missionsCompleted" },
+                { id: "missions500", name: "Легенда миссий", description: "Выполнить 500 миссий", icon: "fa-trophy", reward: { crypto: 1500, skillPoints: 7 }, goal: 500, type: "missionsCompleted" },
+                { id: "missions1000", name: "Миф миссий", description: "Выполнить 1000 миссий", icon: "fa-crown", reward: { crypto: 4000, skillPoints: 15 }, goal: 1000, type: "missionsCompleted" },
+                { id: "special5", name: "Спецназовец", description: "Выполнить 5 спецопераций", icon: "fa-user-secret", reward: { crypto: 300, skillPoints: 2 }, goal: 5, type: "specialMissionsCompleted" },
+                { id: "special10", name: "Элитный агент", description: "Выполнить 10 спецопераций", icon: "fa-user-tie", reward: { crypto: 700, skillPoints: 4 }, goal: 10, type: "specialMissionsCompleted" },
+                { id: "special25", name: "Спецподразделение", description: "Выполнить 25 спецопераций", icon: "fa-users", reward: { crypto: 1500, skillPoints: 8 }, goal: 25, type: "specialMissionsCompleted" },
+                { id: "elite3", name: "Элита", description: "Выполнить 3 элитные миссии", icon: "fa-star", reward: { crypto: 500, skillPoints: 3 }, goal: 3, type: "eliteMissionsCompleted" },
+                { id: "elite10", name: "Суперэлита", description: "Выполнить 10 элитных миссий", icon: "fa-stars", reward: { crypto: 2000, skillPoints: 10 }, goal: 10, type: "eliteMissionsCompleted" },
+                { id: "elite25", name: "Абсолютная элита", description: "Выполнить 25 элитных миссий", icon: "fa-crown", reward: { crypto: 5000, skillPoints: 20 }, goal: 25, type: "eliteMissionsCompleted" },
+                { id: "allRegular", name: "Миссия выполнена", description: "Выполнить все обычные миссии", icon: "fa-check-circle", reward: { crypto: 1000, skillPoints: 5 }, goal: 15, type: "allRegularMissions" },
+                { id: "allSpecial", name: "Спецназ", description: "Выполнить все спецоперации", icon: "fa-check-double", reward: { crypto: 3000, skillPoints: 10 }, goal: 10, type: "allSpecialMissions" },
+                { id: "allElite", name: "Абсолют", description: "Выполнить все элитные миссии", icon: "fa-check-square", reward: { crypto: 10000, skillPoints: 25 }, goal: 10, type: "allEliteMissions" },
+                { id: "daily10", name: "Ежедневный игрок", description: "Выполнить 10 ежедневных миссий", icon: "fa-calendar", reward: { crypto: 500, skillPoints: 3 }, goal: 10, type: "dailyMissions" },
+                { id: "daily30", name: "Ежемесячный игрок", description: "Выполнить 30 ежедневных миссий", icon: "fa-calendar-alt", reward: { crypto: 1500, skillPoints: 8 }, goal: 30, type: "dailyMissions" },
+                { id: "daily100", name: "Ежегодный игрок", description: "Выполнить 100 ежедневных миссий", icon: "fa-calendar-week", reward: { crypto: 5000, skillPoints: 20 }, goal: 100, type: "dailyMissions" },
+                { id: "recon50", name: "Разведчик", description: "Выполнить 50 разведок", icon: "fa-binoculars", reward: { crypto: 400, skillPoints: 2 }, goal: 50, type: "reconMissions" },
+                { id: "recon100", name: "Мастер разведки", description: "Выполнить 100 разведок", icon: "fa-search", reward: { crypto: 1000, skillPoints: 5 }, goal: 100, type: "reconMissions" },
+                { id: "recon500", name: "Легенда разведки", description: "Выполнить 500 разведок", icon: "fa-search-location", reward: { crypto: 3000, skillPoints: 12 }, goal: 500, type: "reconMissions" },
+                { id: "hack50", name: "Хакер", description: "Выполнить 50 миссий взлома", icon: "fa-laptop-code", reward: { crypto: 300, skillPoints: 2 }, goal: 50, type: "hackMissions" },
+                { id: "hack100", name: "Мастер взлома", description: "Выполнить 100 миссий взлома", icon: "fa-keyboard", reward: { crypto: 800, skillPoints: 4 }, goal: 100, type: "hackMissions" },
+                { id: "hack500", name: "Легенда взлома", description: "Выполнить 500 миссий взлома", icon: "fa-user-secret", reward: { crypto: 2500, skillPoints: 10 }, goal: 500, type: "hackMissions" },
+                { id: "steal50", name: "Вор", description: "Выполнить 50 миссий кражи", icon: "fa-user-ninja", reward: { crypto: 350, skillPoints: 2 }, goal: 50, type: "stealMissions" },
+                { id: "steal100", name: "Мастер кражи", description: "Выполнить 100 миссий кражи", icon: "fa-mask", reward: { crypto: 900, skillPoints: 5 }, goal: 100, type: "stealMissions" }
+            ],
+            combat: [
+                { id: "success100", name: "Успешный хакер", description: "100 успешных взломов", icon: "fa-check", reward: { crypto: 500, skillPoints: 3 }, goal: 100, type: "successfulHacks" },
+                { id: "success500", name: "Опытный хакер", description: "500 успешных взломов", icon: "fa-check-double", reward: { crypto: 1500, skillPoints: 8 }, goal: 500, type: "successfulHacks" },
+                { id: "success1000", name: "Ветеран взлома", description: "1000 успешных взломов", icon: "fa-check-square", reward: { crypto: 4000, skillPoints: 15 }, goal: 1000, type: "successfulHacks" },
+                { id: "success5000", name: "Легенда взлома", description: "5000 успешных взломов", icon: "fa-crown", reward: { crypto: 15000, skillPoints: 30 }, goal: 5000, type: "successfulHacks" },
+                { id: "fail10", name: "Уроки неудач", description: "10 проваленных миссий", icon: "fa-times", reward: { crypto: 100, skillPoints: 1 }, goal: 10, type: "failedHacks" },
+                { id: "fail50", name: "Школа жизни", description: "50 проваленных миссий", icon: "fa-times-circle", reward: { crypto: 300, skillPoints: 2 }, goal: 50, type: "failedHacks" },
+                { id: "fail100", name: "Устойчивость", description: "100 проваленных миссий", icon: "fa-exclamation-triangle", reward: { crypto: 700, skillPoints: 4 }, goal: 100, type: "failedHacks" },
+                { id: "ddos10", name: "DDoS атакер", description: "Выполнить 10 DDoS атак", icon: "fa-network-wired", reward: { crypto: 200, skillPoints: 1 }, goal: 10, type: "ddosMissions" },
+                { id: "ddos50", name: "Мастер DDoS", description: "Выполнить 50 DDoS атак", icon: "fa-server", reward: { crypto: 600, skillPoints: 3 }, goal: 50, type: "ddosMissions" },
+                { id: "ddos100", name: "Легенда DDoS", description: "Выполнить 100 DDoS атак", icon: "fa-globe", reward: { crypto: 1500, skillPoints: 7 }, goal: 100, type: "ddosMissions" },
+                { id: "sabotage10", name: "Саботажник", description: "Выполнить 10 миссий саботажа", icon: "fa-bomb", reward: { crypto: 250, skillPoints: 2 }, goal: 10, type: "sabotageMissions" },
+                { id: "sabotage50", name: "Мастер саботажа", description: "Выполнить 50 миссий саботажа", icon: "fa-fire", reward: { crypto: 800, skillPoints: 4 }, goal: 50, type: "sabotageMissions" },
+                { id: "sabotage100", name: "Легенда саботажа", description: "Выполнить 100 миссий саботажа", icon: "fa-skull", reward: { crypto: 2000, skillPoints: 10 }, goal: 100, type: "sabotageMissions" },
+                { id: "phishing10", name: "Фишер", description: "Выполнить 10 фишинг атак", icon: "fa-fish", reward: { crypto: 150, skillPoints: 1 }, goal: 10, type: "phishingMissions" },
+                { id: "phishing50", name: "Мастер фишинга", description: "Выполнить 50 фишинг атак", icon: "fa-water", reward: { crypto: 500, skillPoints: 3 }, goal: 50, type: "phishingMissions" },
+                { id: "phishing100", name: "Легенда фишинга", description: "Выполнить 100 фишинг атак", icon: "fa-ocean", reward: { crypto: 1200, skillPoints: 6 }, goal: 100, type: "phishingMissions" },
+                { id: "mining10", name: "Майнер", description: "Выполнить 10 миссий майнинга", icon: "fa-digging", reward: { crypto: 300, skillPoints: 2 }, goal: 10, type: "miningMissions" },
+                { id: "mining50", name: "Мастер майнинга", description: "Выполнить 50 миссий майнинга", icon: "fa-mountain", reward: { crypto: 900, skillPoints: 5 }, goal: 50, type: "miningMissions" },
+                { id: "mining100", name: "Легенда майнинга", description: "Выполнить 100 миссий майнинга", icon: "fa-gem", reward: { crypto: 2500, skillPoints: 12 }, goal: 100, type: "miningMissions" },
+                { id: "social10", name: "Манипулятор", description: "Выполнить 10 миссий социальной инженерии", icon: "fa-users", reward: { crypto: 200, skillPoints: 1 }, goal: 10, type: "socialMissions" },
+                { id: "social50", name: "Мастер манипуляции", description: "Выполнить 50 миссий социальной инженерии", icon: "fa-user-friends", reward: { crypto: 700, skillPoints: 4 }, goal: 50, type: "socialMissions" },
+                { id: "social100", name: "Легенда манипуляции", description: "Выполнить 100 миссий социальной инженерии", icon: "fa-people-arrows", reward: { crypto: 1800, skillPoints: 9 }, goal: 100, type: "socialMissions" },
+                { id: "spy10", name: "Шпион", description: "Выполнить 10 миссий шпионажа", icon: "fa-user-secret", reward: { crypto: 250, skillPoints: 2 }, goal: 10, type: "spyMissions" },
+                { id: "spy50", name: "Мастер шпионажа", description: "Выполнить 50 миссий шпионажа", icon: "fa-eye", reward: { crypto: 800, skillPoints: 4 }, goal: 50, type: "spyMissions" },
+                { id: "spy100", name: "Легенда шпионажа", description: "Выполнить 100 миссий шпионажа", icon: "fa-binoculars", reward: { crypto: 2000, skillPoints: 10 }, goal: 100, type: "spyMissions" }
+            ],
+            economy: [
+                { id: "crypto1000", name: "Тысячник", description: "Заработать 1000 крипто", icon: "fa-coins", reward: { crypto: 100, skillPoints: 1 }, goal: 1000, type: "totalEarned" },
+                { id: "crypto5000", name: "Пятитысячник", description: "Заработать 5000 крипто", icon: "fa-money-bill-wave", reward: { crypto: 300, skillPoints: 2 }, goal: 5000, type: "totalEarned" },
+                { id: "crypto10000", name: "Десятитысячник", description: "Заработать 10000 крипто", icon: "fa-money-check", reward: { crypto: 700, skillPoints: 4 }, goal: 10000, type: "totalEarned" },
+                { id: "crypto50000", name: "Пятидесятитысячник", description: "Заработать 50000 крипто", icon: "fa-donate", reward: { crypto: 2000, skillPoints: 10 }, goal: 50000, type: "totalEarned" },
+                { id: "crypto100000", name: "Стотысячник", description: "Заработать 100000 крипто", icon: "fa-piggy-bank", reward: { crypto: 5000, skillPoints: 20 }, goal: 100000, type: "totalEarned" },
+                { id: "crypto1000000", name: "Миллионер", description: "Заработать 1000000 крипто", icon: "fa-crown", reward: { crypto: 20000, skillPoints: 50 }, goal: 1000000, type: "totalEarned" },
+                { id: "spent1000", name: "Тратитель", description: "Потратить 1000 крипто", icon: "fa-shopping-cart", reward: { crypto: 100, skillPoints: 1 }, goal: 1000, type: "totalSpent" },
+                { id: "spent5000", name: "Покупатель", description: "Потратить 5000 крипто", icon: "fa-credit-card", reward: { crypto: 300, skillPoints: 2 }, goal: 5000, type: "totalSpent" },
+                { id: "spent10000", name: "Шопоголик", description: "Потратить 10000 крипто", icon: "fa-store", reward: { crypto: 700, skillPoints: 4 }, goal: 10000, type: "totalSpent" },
+                { id: "spent50000", name: "Инвестор", description: "Потратить 50000 крипто", icon: "fa-chart-line", reward: { crypto: 2000, skillPoints: 10 }, goal: 50000, type: "totalSpent" },
+                { id: "spent100000", name: "Магнат", description: "Потратить 100000 крипто", icon: "fa-building", reward: { crypto: 5000, skillPoints: 20 }, goal: 100000, type: "totalSpent" },
+                { id: "items10", name: "Коллекционер", description: "Купить 10 предметов", icon: "fa-box", reward: { crypto: 200, skillPoints: 1 }, goal: 10, type: "itemsPurchased" },
+                { id: "items50", name: "Покупатель", description: "Купить 50 предметов", icon: "fa-boxes", reward: { crypto: 600, skillPoints: 3 }, goal: 50, type: "itemsPurchased" },
+                { id: "items100", name: "Шопоголик", description: "Купить 100 предметов", icon: "fa-pallet", reward: { crypto: 1500, skillPoints: 7 }, goal: 100, type: "itemsPurchased" },
+                { id: "items500", name: "Магнат", description: "Купить 500 предметов", icon: "fa-warehouse", reward: { crypto: 5000, skillPoints: 20 }, goal: 500, type: "itemsPurchased" },
+                { id: "craft10", name: "Ремесленник", description: "Создать 10 предметов", icon: "fa-hammer", reward: { crypto: 300, skillPoints: 2 }, goal: 10, type: "itemsCrafted" },
+                { id: "craft50", name: "Мастер", description: "Создать 50 предметов", icon: "fa-tools", reward: { crypto: 900, skillPoints: 5 }, goal: 50, type: "itemsCrafted" },
+                { id: "craft100", name: "Артизан", description: "Создать 100 предметов", icon: "fa-gem", reward: { crypto: 2000, skillPoints: 10 }, goal: 100, type: "itemsCrafted" },
+                { id: "craft500", name: "Легенда крафта", description: "Создать 500 предметов", icon: "fa-crown", reward: { crypto: 7000, skillPoints: 25 }, goal: 500, type: "itemsCrafted" },
+                { id: "bitcoin1", name: "Биткоинер", description: "Получить 1 биткоин", icon: "fa-bitcoin", reward: { crypto: 500, skillPoints: 3 }, goal: 1, type: "bitcoins" },
+                { id: "bitcoin5", name: "Биткоин-инвестор", description: "Получить 5 биткоинов", icon: "fa-coins", reward: { crypto: 1500, skillPoints: 8 }, goal: 5, type: "bitcoins" },
+                { id: "bitcoin10", name: "Биткоин-магнат", description: "Получить 10 биткоинов", icon: "fa-money-bill-wave", reward: { crypto: 3000, skillPoints: 15 }, goal: 10, type: "bitcoins" },
+                { id: "darkcoin1", name: "Темный властелин", description: "Получить 1 дарккоин", icon: "fa-mask", reward: { crypto: 1000, skillPoints: 5 }, goal: 1, type: "darkcoins" },
+                { id: "darkcoin5", name: "Темный магнат", description: "Получить 5 дарккоинов", icon: "fa-user-secret", reward: { crypto: 3000, skillPoints: 15 }, goal: 5, type: "darkcoins" },
+                { id: "darkcoin10", name: "Темный император", description: "Получить 10 дарккоинов", icon: "fa-crown", reward: { crypto: 7000, skillPoints: 30 }, goal: 10, type: "darkcoins" }
+            ],
+            special: [
+                { id: "firstMission", name: "Первый взлом", description: "Выполнить первую миссию", icon: "fa-flag", reward: { crypto: 50, skillPoints: 1 }, goal: 1, type: "firstMission" },
+                { id: "firstSpecial", name: "Первая спецоперация", description: "Выполнить первую спецоперацию", icon: "fa-user-secret", reward: { crypto: 200, skillPoints: 2 }, goal: 1, type: "firstSpecial" },
+                { id: "firstElite", name: "Первая элитная миссия", description: "Выполнить первую элитную миссию", icon: "fa-star", reward: { crypto: 500, skillPoints: 3 }, goal: 1, type: "firstElite" },
+                { id: "firstDaily", name: "Первый ежедневник", description: "Выполнить первую ежедневную миссию", icon: "fa-calendar", reward: { crypto: 100, skillPoints: 1 }, goal: 1, type: "firstDaily" },
+                { id: "firstCraft", name: "Первый крафт", description: "Создать первый предмет", icon: "fa-hammer", reward: { crypto: 150, skillPoints: 1 }, goal: 1, type: "firstCraft" },
+                { id: "firstPurchase", name: "Первая покупка", description: "Купить первый предмет", icon: "fa-shopping-cart", reward: { crypto: 100, skillPoints: 1 }, goal: 1, type: "firstPurchase" },
+                { id: "firstUpgrade", name: "Первое улучшение", description: "Улучшить первый навык", icon: "fa-cogs", reward: { crypto: 50, skillPoints: 1 }, goal: 1, type: "firstUpgrade" },
+                { id: "firstEquipment", name: "Первое оборудование", description: "Улучшить первое оборудование", icon: "fa-tools", reward: { crypto: 100, skillPoints: 1 }, goal: 1, type: "firstEquipment" },
+                { id: "allAchievements", name: "Абсолютный чемпион", description: "Получить все достижения", icon: "fa-trophy", reward: { crypto: 10000, skillPoints: 50 }, goal: 125, type: "allAchievements" },
+                { id: "maxLevel", name: "Максимальный уровень", description: "Достигнуть максимального уровня", icon: "fa-user-astronaut", reward: { crypto: 5000, skillPoints: 25 }, goal: 100, type: "maxLevel" },
+                { id: "maxSkills", name: "Максимальные навыки", description: "Прокачать все навыки до максимума", icon: "fa-cogs", reward: { crypto: 8000, skillPoints: 40 }, goal: 20, type: "maxSkills" },
+                { id: "maxEquipment", name: "Максимальное оборудование", description: "Улучшить все оборудование до максимума", icon: "fa-tools", reward: { crypto: 7000, skillPoints: 35 }, goal: 20, type: "maxEquipment" },
+                { id: "completeGame", name: "Завершение игры", description: "Выполнить все миссии и достижения", icon: "fa-crown", reward: { crypto: 15000, skillPoints: 75 }, goal: 1, type: "completeGame" },
+                { id: "secret1", name: "Секретное достижение 1", description: "Найди скрытое достижение", icon: "fa-question", reward: { crypto: 1000, skillPoints: 5 }, goal: 1, type: "secret1" },
+                { id: "secret2", name: "Секретное достижение 2", description: "Найди другое скрытое достижение", icon: "fa-question-circle", reward: { crypto: 2000, skillPoints: 10 }, goal: 1, type: "secret2" },
+                { id: "secret3", name: "Секретное достижение 3", description: "Найди третье скрытое достижение", icon: "fa-question-square", reward: { crypto: 3000, skillPoints: 15 }, goal: 1, type: "secret3" },
+                { id: "secret4", name: "Секретное достижение 4", description: "Найди четвертое скрытое достижение", icon: "fa-question-diamond", reward: { crypto: 4000, skillPoints: 20 }, goal: 1, type: "secret4" },
+                { id: "secret5", name: "Секретное достижение 5", description: "Найди пятое скрытое достижение", icon: "fa-question-octagon", reward: { crypto: 5000, skillPoints: 25 }, goal: 1, type: "secret5" },
+                { id: "community", name: "Сообщество", description: "Присоединиться к сообществу хакеров", icon: "fa-users", reward: { crypto: 500, skillPoints: 3 }, goal: 1, type: "community" },
+                { id: "legend", name: "Легенда", description: "Стать легендой среди хакеров", icon: "fa-crown", reward: { crypto: 3000, skillPoints: 15 }, goal: 1, type: "legend" },
+                { id: "master", name: "Мастер", description: "Стать мастером взлома", icon: "fa-user-graduate", reward: { crypto: 2000, skillPoints: 10 }, goal: 1, type: "master" },
+                { id: "guru", name: "Гуру", description: "Стать гуру кибербезопасности", icon: "fa-user-tie", reward: { crypto: 2500, skillPoints: 12 }, goal: 1, type: "guru" },
+                { id: "wizard", name: "Волшебник", description: "Стать волшебником программирования", icon: "fa-hat-wizard", reward: { crypto: 3500, skillPoints: 18 }, goal: 1, type: "wizard" },
+                { id: "ninja", name: "Ниндзя", description: "Стать ниндзя стелс-атак", icon: "fa-user-ninja", reward: { crypto: 4000, skillPoints: 20 }, goal: 1, type: "ninja" },
+                { id: "phantom", name: "Фантом", description: "Стать фантомом в сети", icon: "fa-ghost", reward: { crypto: 4500, skillPoints: 22 }, goal: 1, type: "phantom" }
+            ]
+        };
+
+        // Get Moscow Time (UTC+3)
+        function getMoscowTime() {
+            const now = new Date();
+            // Moscow is UTC+3
+            const moscowTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+            return moscowTime;
+        }
+
+        // Format time for display
+        function formatTime(ms) {
+            const seconds = Math.floor((ms / 1000) % 60);
+            const minutes = Math.floor((ms / (1000 * 60)) % 60);
+            const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+            
+            if (days > 0) {
+                return `${days}д ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Format short time
+        function formatShortTime(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Initialize Game
+        function initGame() {
+            loadGame();
+            updateEnergy();
+            renderMissions();
+            renderSkills();
+            renderEquipment();
+            renderShop();
+            renderAchievements();
+            updateDisplays();
+            startTimers();
+            
+            // Setup navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    showScreen(this.dataset.tab);
+                });
+            });
+
+            // Setup sub-tabs
+            document.querySelectorAll('.sub-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const parent = this.closest('.screen');
+                    const subtab = this.dataset.subtab;
+                    
+                    // Hide all sub-tabs in this screen
+                    parent.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+                    parent.querySelectorAll('[class$="-subtab"]').forEach(st => st.style.display = 'none');
+                    parent.querySelectorAll('[class$="-subtab"]').forEach(st => {
+                        if (st.id && st.id.startsWith(subtab)) {
+                            st.style.display = 'block';
+                        }
+                    });
+                    
+                    // Show selected sub-tab
+                    this.classList.add('active');
+                    const target = parent.querySelector(`#${subtab}${capitalizeFirstLetter(parent.id)}`);
+                    if (target) target.style.display = 'block';
+                });
+            });
+
+            // Security check
+            securityCheck();
+        }
+
+        // Capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // Security check to prevent cheating
+        function securityCheck() {
+            const now = getMoscowTime().getTime();
+            
+            // Check if time was manipulated
+            if (gameState.lastServerTime && now < gameState.lastServerTime) {
+                gameState.cheatAttempts++;
+                showNotification(`Обнаружена попытка манипуляции! (${gameState.cheatAttempts}/3)`, 'danger');
+                
+                if (gameState.cheatAttempts >= 3) {
+                    resetGame();
+                    showNotification('Игра сброшена из-за многократных нарушений!', 'danger');
+                    return;
+                }
+                
+                // Reset timers to prevent exploitation
+                gameState.lastEnergyUpdate = now;
+                gameState.lastDailyMission = now;
+                gameState.lastReconMission = now;
+                gameState.missionCooldowns = {};
+                gameState.itemCooldowns = {};
+            }
+            
+            gameState.lastServerTime = now;
+            saveGame();
+        }
+
+        // Reset game if cheating detected
+        function resetGame() {
+            localStorage.removeItem('dataRebelsSave');
+            gameState.level = 1;
+            gameState.exp = 0;
+            gameState.energy = 100;
+            gameState.maxEnergy = 100;
+            gameState.crypto = 500;
+            gameState.bitcoins = 0;
+            gameState.darkcoins = 0;
+            gameState.completedMissions = 0;
+            gameState.totalEarned = 0;
+            gameState.totalSpent = 0;
+            
+            // Reset skills
+            gameState.hack = 1;
+            gameState.stealth = 1;
+            gameState.analytics = 1;
+            gameState.speed = 1;
+            gameState.firewall = 1;
+            gameState.energyCapacity = 1;
+            gameState.cryptoMining = 1;
+            gameState.socialEngineering = 1;
+            gameState.zeroDay = 1;
+            gameState.botnet = 1;
+            
+            // Reset equipment
+            gameState.equipment = {
+                cpu: { level: 1, equipped: true },
+                gpu: { level: 1, equipped: true },
+                ram: { level: 1, equipped: true },
+                storage: { level: 1, equipped: true },
+                network: { level: 1, equipped: true },
+                vpn: { level: 0, equipped: false },
+                antivirus: { level: 0, equipped: false },
+                firewall: { level: 0, equipped: false },
+                encryption: { level: 0, equipped: false },
+                anonymizer: { level: 0, equipped: false }
+            };
+            
+            // Reset inventory and points
+            gameState.inventory = [];
+            gameState.skillPoints = 5;
+            gameState.upgradePoints = 0;
+            
+            // Reset timers
+            const now = getMoscowTime().getTime();
+            gameState.lastEnergyUpdate = now;
+            gameState.lastDailyMission = now - 86400000;
+            gameState.lastReconMission = now - 3600000;
+            gameState.missionCooldowns = {};
+            gameState.itemCooldowns = {};
+            
+            // Reset achievements
+            gameState.achievements = {};
+            gameState.stats = {
+                missionsCompleted: 0,
+                specialMissionsCompleted: 0,
+                eliteMissionsCompleted: 0,
+                itemsCrafted: 0,
+                itemsPurchased: 0,
+                skillsUpgraded: 0,
+                equipmentUpgraded: 0,
+                cryptoMined: 0,
+                successfulHacks: 0,
+                failedHacks: 0,
+                consecutiveSuccesses: 0,
+                maxConsecutiveSuccesses: 0,
+                totalPlayTime: 0,
+                loginDays: 1,
+                lastLogin: now
+            };
+            
+            gameState.cheatAttempts = 0;
+            
+            updateDisplays();
+            renderMissions();
+            renderSkills();
+            renderEquipment();
+            renderShop();
+            renderAchievements();
+            saveGame();
+        }
+
+        // Load saved game
+        function loadGame() {
+            const saved = localStorage.getItem('dataRebelsSave');
+            if (saved) {
+                const savedState = JSON.parse(saved);
+                Object.assign(gameState, savedState);
+                
+                // Initialize timers if they don't exist
+                const now = getMoscowTime().getTime();
+                if (!gameState.lastEnergyUpdate) gameState.lastEnergyUpdate = now;
+                if (!gameState.lastDailyMission) gameState.lastDailyMission = now - 86400000;
+                if (!gameState.lastReconMission) gameState.lastReconMission = now - 3600000;
+                if (!gameState.missionCooldowns) gameState.missionCooldowns = {};
+                if (!gameState.itemCooldowns) gameState.itemCooldowns = {};
+                if (!gameState.achievements) gameState.achievements = {};
+                if (!gameState.stats) {
+                    gameState.stats = {
+                        missionsCompleted: 0,
+                        specialMissionsCompleted: 0,
+                        eliteMissionsCompleted: 0,
+                        itemsCrafted: 0,
+                        itemsPurchased: 0,
+                        skillsUpgraded: 0,
+                        equipmentUpgraded: 0,
+                        cryptoMined: 0,
+                        successfulHacks: 0,
+                        failedHacks: 0,
+                        consecutiveSuccesses: 0,
+                        maxConsecutiveSuccesses: 0,
+                        totalPlayTime: 0,
+                        loginDays: 1,
+                        lastLogin: now
+                    };
+                }
+                
+                // Check for daily login
+                const lastLogin = new Date(gameState.stats.lastLogin);
+                const today = new Date(now);
+                if (lastLogin.getDate() !== today.getDate() || 
+                    lastLogin.getMonth() !== today.getMonth() || 
+                    lastLogin.getFullYear() !== today.getFullYear()) {
+                    gameState.stats.loginDays++;
+                    gameState.stats.lastLogin = now;
+                    showNotification(`Ежедневный бонус! Входите ${gameState.stats.loginDays} день подряд!`, 'success');
+                }
+            } else {
+                // First time setup
+                const now = getMoscowTime().getTime();
+                gameState.lastEnergyUpdate = now;
+                gameState.lastDailyMission = now - 86400000;
+                gameState.lastReconMission = now - 3600000;
+                gameState.missionCooldowns = {};
+                gameState.itemCooldowns = {};
+                gameState.achievements = {};
+                gameState.stats.lastLogin = now;
+            }
+        }
+
+        // Save game
+        function saveGame() {
+            gameState.lastServerTime = getMoscowTime().getTime();
+            localStorage.setItem('dataRebelsSave', JSON.stringify(gameState));
+        }
+
+        // Update energy over time (5 minutes per energy)
+        function updateEnergy() {
+            const now = getMoscowTime().getTime();
+            const timeDiff = now - gameState.lastEnergyUpdate;
+            const energyGain = Math.floor(timeDiff / 300000); // 1 energy every 5 minutes
+            
+            if (energyGain > 0) {
+                gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + energyGain);
+                gameState.lastEnergyUpdate = now - (timeDiff % 300000); // Keep the remainder
+                updateDisplays();
+                saveGame();
+            }
+            
+            // Update next energy restore time
+            const nextEnergyMs = 300000 - (timeDiff % 300000);
+            document.getElementById('nextEnergyRestore').textContent = formatShortTime(nextEnergyMs);
+        }
+
+        // Start all timers
+        function startTimers() {
+            // Update energy every second
+            setInterval(updateEnergy, 1000);
+            
+            // Update cooldowns every second
+            setInterval(updateCooldowns, 1000);
+            
+            // Update play time every minute
+            setInterval(updatePlayTime, 60000);
+            
+            // Security check every 30 seconds
+            setInterval(securityCheck, 30000);
+        }
+
+        // Update play time
+        function updatePlayTime() {
+            gameState.stats.totalPlayTime += 60000;
+            checkAchievements();
+        }
+
+        // Update cooldowns display
+        function updateCooldowns() {
+            const now = getMoscowTime().getTime();
+            
+            // Daily mission cooldown
+            const dailyCooldown = 86400000 - (now - gameState.lastDailyMission);
+            const dailyBtn = document.getElementById('dailyMissionBtn');
+            const dailyCooldownEl = document.getElementById('dailyCooldown');
+            
+            if (dailyCooldown > 0) {
+                dailyBtn.disabled = true;
+                dailyCooldownEl.textContent = ` (${formatTime(dailyCooldown)})`;
+            } else {
+                dailyBtn.disabled = false;
+                dailyCooldownEl.textContent = '';
+            }
+            
+            // Mission cooldowns
+            missions.forEach(mission => {
+                if (mission.cooldown > 0) {
+                    const missionCooldown = gameState.missionCooldowns[mission.id] || 0;
+                    const cooldownRemaining = mission.cooldown - (now - missionCooldown);
+                    
+                    if (cooldownRemaining > 0) {
+                        // Update mission card cooldown display if visible
+                        const missionCard = document.querySelector(`[data-mission-id="${mission.id}"]`);
+                        if (missionCard) {
+                            let cooldownOverlay = missionCard.querySelector('.cooldown-overlay');
+                            if (!cooldownOverlay) {
+                                cooldownOverlay = document.createElement('div');
+                                cooldownOverlay.className = 'cooldown-overlay';
+                                missionCard.appendChild(cooldownOverlay);
+                            }
+                            cooldownOverlay.innerHTML = `<div>ПЕРЕЗАРЯДКА</div><div>${formatShortTime(cooldownRemaining)}</div>`;
+                        }
+                    } else if (missionCooldown > 0) {
+                        delete gameState.missionCooldowns[mission.id];
+                    }
+                }
+            });
+            
+            // Item cooldowns
+            Object.keys(gameState.itemCooldowns).forEach(itemId => {
+                const cooldown = gameState.itemCooldowns[itemId];
+                const cooldownRemaining = cooldown - now;
+                
+                if (cooldownRemaining <= 0) {
+                    delete gameState.itemCooldowns[itemId];
+                }
+            });
+        }
+
+        // Show screen
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'skills') {
+                renderSkills();
+            } else if (screenId === 'inventory') {
+                renderInventory();
+            } else if (screenId === 'achievements') {
+                renderAchievements();
+            }
+        }
+
+        // Update all displays
+        function updateDisplays() {
+            // Update header stats
+            document.getElementById('energyValue').textContent = `${gameState.energy}/${gameState.maxEnergy}`;
+            document.getElementById('energyFill').style.width = `${(gameState.energy / gameState.maxEnergy) * 100}%`;
+            document.getElementById('cryptoValue').textContent = Math.max(0, gameState.crypto);
+            document.getElementById('levelValue').textContent = gameState.level;
+            
+            // Update profile screen
+            document.getElementById('statHack').textContent = gameState.hack;
+            document.getElementById('statStealth').textContent = gameState.stealth;
+            document.getElementById('statAnalytics').textContent = gameState.analytics;
+            document.getElementById('statSpeed').textContent = gameState.speed;
+            
+            const expNeeded = getRequiredExp(gameState.level);
+            const expPercent = Math.min(100, (gameState.exp / expNeeded) * 100);
+            document.getElementById('expText').textContent = `${gameState.exp}/${expNeeded}`;
+            document.getElementById('expProgress').style.width = `${expPercent}%`;
+            document.getElementById('expFill').style.width = `${expPercent}%`;
+            
+            document.getElementById('completedMissions').textContent = gameState.completedMissions;
+            document.getElementById('totalEarned').textContent = `${Math.max(0, gameState.totalEarned)} крипто`;
+            
+            const missionsProgress = Math.min(100, (gameState.completedMissions / 100) * 100);
+            document.getElementById('missionsProgress').style.width = `${missionsProgress}%`;
+            
+            // Update player rank
+            const rank = getPlayerRank();
+            document.getElementById('playerRank').textContent = rank;
+            
+            // Update skill points
+            document.getElementById('skillPoints').textContent = Math.max(0, gameState.skillPoints);
+        }
+
+        // Get player rank based on level
+        function getPlayerRank() {
+            if (gameState.level < 5) return "Новичок";
+            if (gameState.level < 10) return "Хакер";
+            if (gameState.level < 15) return "Эксперт";
+            if (gameState.level < 20) return "Мастер";
+            if (gameState.level < 25) return "Легенда";
+            if (gameState.level < 30) return "Мифический";
+            if (gameState.level < 40) return "Божественный";
+            if (gameState.level < 50) return "Абсолют";
+            return "Вселенский";
+        }
+
+        // Render missions grid
+        function renderMissions() {
+            const regularMissionsGrid = document.getElementById('missionsGrid');
+            const specialMissionsGrid = document.getElementById('specialMissionsGrid');
+            const eliteMissionsGrid = document.getElementById('eliteMissionsGrid');
+            
+            regularMissionsGrid.innerHTML = '';
+            specialMissionsGrid.innerHTML = '';
+            eliteMissionsGrid.innerHTML = '';
+            
+            const availableRegularMissions = missions.filter(mission => mission.level <= gameState.level && mission.category === "regular").length;
+            const availableSpecialMissions = missions.filter(mission => mission.level <= gameState.level && mission.category === "special").length;
+            const availableEliteMissions = missions.filter(mission => mission.level <= gameState.level && mission.category === "elite").length;
+            
+            document.getElementById('availableMissions').textContent = availableRegularMissions;
+            
+            missions.forEach(mission => {
+                if (mission.level <= gameState.level) {
+                    const successChance = calculateSuccessChance(mission.chance);
+                    const canStart = gameState.energy >= mission.energy;
+                    const now = getMoscowTime().getTime();
+                    const missionCooldown = gameState.missionCooldowns[mission.id] || 0;
+                    const isOnCooldown = now - missionCooldown < (mission.cooldown || 0);
+                    
+                    const missionElement = document.createElement('div');
+                    missionElement.className = 'mission-card';
+                    missionElement.setAttribute('data-mission-id', mission.id);
+                    missionElement.onclick = () => canStart && !isOnCooldown && startMission(mission);
+                    
+                    // Difficulty color
+                    let difficultyColor = 'var(--success)';
+                    let difficultyText = 'Легкая';
+                    if (mission.chance < 0.4) {
+                        difficultyColor = 'var(--danger)';
+                        difficultyText = 'Очень сложная';
+                    } else if (mission.chance < 0.6) {
+                        difficultyColor = 'var(--warning)';
+                        difficultyText = 'Сложная';
+                    } else if (mission.chance < 0.8) {
+                        difficultyColor = 'var(--primary)';
+                        difficultyText = 'Средняя';
+                    }
+                    
+                    missionElement.innerHTML = `
+                        <div class="mission-icon">
+                            <i class="fas ${mission.icon}"></i>
+                        </div>
+                        <div class="mission-name">${mission.name}</div>
+                        <div class="mission-difficulty" style="color: ${difficultyColor}">${difficultyText}</div>
+                        <div class="mission-rewards">
+                            <div class="reward"><i class="fas fa-bolt"></i> ${mission.energy}</div>
+                            <div class="reward"><i class="fas fa-coins"></i> ${mission.crypto}</div>
+                            <div class="reward"><i class="fas fa-star"></i> ${mission.exp}</div>
+                        </div>
+                        ${!canStart ? '<div class="cooldown-overlay"><div>НЕТ ЭНЕРГИИ</div></div>' : ''}
+                        ${isOnCooldown ? '<div class="cooldown-overlay"><div>ПЕРЕЗАРЯДКА</div></div>' : ''}
+                    `;
+                    
+                    if (mission.category === "regular") {
+                        regularMissionsGrid.appendChild(missionElement);
+                    } else if (mission.category === "special") {
+                        specialMissionsGrid.appendChild(missionElement);
+                    } else if (mission.category === "elite") {
+                        eliteMissionsGrid.appendChild(missionElement);
+                    }
+                }
+            });
+        }
+
+        // Calculate mission success chance
+        function calculateSuccessChance(baseChance) {
+            const hackBonus = gameState.hack * 0.02;
+            const stealthBonus = gameState.stealth * 0.01;
+            const equipmentBonus = calculateEquipmentBonus();
+            
+            return Math.min(0.95, baseChance + hackBonus + stealthBonus + equipmentBonus);
+        }
+
+        // Calculate equipment bonus
+        function calculateEquipmentBonus() {
+            let bonus = 0;
+            Object.values(gameState.equipment).forEach(eq => {
+                if (eq.equipped && eq.level > 0) {
+                    // Add small bonus for each equipped item
+                    bonus += eq.level * 0.005;
+                }
+            });
+            return bonus;
+        }
+
+        // Start mission
+        function startMission(mission) {
+            if (gameState.energy < mission.energy) {
+                showNotification('Недостаточно энергии!', 'danger');
+                return;
+            }
+            
+            const now = getMoscowTime().getTime();
+            const missionCooldown = gameState.missionCooldowns[mission.id] || 0;
+            if (now - missionCooldown < (mission.cooldown || 0)) {
+                showNotification('Миссия еще на перезарядке!', 'warning');
+                return;
+            }
+            
+            // Show hacking overlay
+            const overlay = document.getElementById('hackingOverlay');
+            const terminal = document.getElementById('terminal');
+            const hackingText = document.getElementById('hackingText');
+            
+            hackingText.textContent = `⚡ ВЗЛОМ: ${mission.name} ⚡`;
+            terminal.innerHTML = '';
+            overlay.style.display = 'flex';
+            
+            // Simulate hacking process
+            const lines = [
+                '> Инициализация подключения...',
+                '> Обход межсетевого экрана...',
+                '> Поиск уязвимостей...',
+                '> Эксплойт запущен...',
+                '> Получение доступа...',
+                '> Скачивание данных...'
+            ];
+            
+            let lineIndex = 0;
+            const interval = setInterval(() => {
+                if (lineIndex < lines.length) {
+                    const line = document.createElement('div');
+                    line.className = 'terminal-line';
+                    line.textContent = lines[lineIndex];
+                    line.style.animationDelay = `${lineIndex * 0.2}s`;
+                    terminal.appendChild(line);
+                    terminal.scrollTop = terminal.scrollHeight;
+                    lineIndex++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        completeMission(mission);
+                    }, 1000);
+                }
+            }, 500);
+        }
+
+        // Complete mission
+        function completeMission(mission) {
+            const successChance = calculateSuccessChance(mission.chance);
+            const success = Math.random() < successChance;
+            
+            // Ensure energy doesn't go negative
+            gameState.energy = Math.max(0, gameState.energy - mission.energy);
+            
+            if (success) {
+                // Calculate rewards with bonuses
+                const analyticsBonus = 1 + (gameState.analytics * 0.01);
+                const equipmentBonus = calculateEquipmentBonus();
+                const totalBonus = analyticsBonus + equipmentBonus;
+                
+                const expGained = Math.floor(mission.exp * totalBonus);
+                const cryptoGained = Math.floor(mission.crypto * totalBonus);
+                
+                gameState.exp += expGained;
+                gameState.crypto = Math.max(0, gameState.crypto + cryptoGained);
+                gameState.completedMissions++;
+                gameState.totalEarned += cryptoGained;
+                gameState.stats.missionsCompleted++;
+                gameState.stats.successfulHacks++;
+                gameState.stats.consecutiveSuccesses++;
+                
+                if (gameState.stats.consecutiveSuccesses > gameState.stats.maxConsecutiveSuccesses) {
+                    gameState.stats.maxConsecutiveSuccesses = gameState.stats.consecutiveSuccesses;
+                }
+                
+                if (mission.category === "special") {
+                    gameState.stats.specialMissionsCompleted++;
+                } else if (mission.category === "elite") {
+                    gameState.stats.eliteMissionsCompleted++;
+                }
+                
+                // Set cooldown for mission
+                if (mission.cooldown > 0) {
+                    gameState.missionCooldowns[mission.id] = getMoscowTime().getTime();
+                }
+                
+                // Check for level up
+                const expNeeded = getRequiredExp(gameState.level);
+                if (gameState.exp >= expNeeded) {
+                    gameState.level++;
+                    gameState.exp -= expNeeded;
+                    gameState.skillPoints += 2;
+                    gameState.upgradePoints += 1;
+                    showNotification(`🎉 НОВЫЙ УРОВЕНЬ! Теперь уровень ${gameState.level}`, 'success');
+                }
+                
+                // Special rewards for special missions
+                if (mission.specialReward) {
+                    let specialMessage = "";
+                    switch(mission.specialReward) {
+                        case "firewall":
+                            gameState.firewall += 1;
+                            specialMessage = " +1 к навыку Обход защиты";
+                            break;
+                        case "botnet":
+                            gameState.botnet += 1;
+                            specialMessage = " +1 к навыку Ботнет";
+                            break;
+                        case "crypto":
+                            gameState.cryptoMining += 1;
+                            specialMessage = " +1 к навыку Крипто-майнинг";
+                            break;
+                        case "bitcoin":
+                            gameState.bitcoins += 1;
+                            specialMessage = " +1 Биткоин";
+                            break;
+                        // Add more special rewards as needed
+                    }
+                    showNotification(`✅ МИССИЯ УСПЕШНА! +${expGained} опыта, +${cryptoGained} крипто${specialMessage}`, 'success');
+                } else {
+                    showNotification(`✅ МИССИЯ УСПЕШНА! +${expGained} опыта, +${cryptoGained} крипто`, 'success');
+                }
+            } else {
+                gameState.stats.failedHacks++;
+                gameState.stats.consecutiveSuccesses = 0;
+                showNotification('❌ ВЗЛОМ ОБНАРУЖЕН! Миссия провалена', 'danger');
+            }
+            
+            // Check achievements
+            checkAchievements();
+            
+            updateDisplays();
+            renderMissions();
+            saveGame();
+        }
+
+        // Start daily mission
+        function startDailyMission() {
+            const now = getMoscowTime().getTime();
+            const dailyCooldown = 86400000 - (now - gameState.lastDailyMission);
+            
+            if (dailyCooldown > 0) {
+                showNotification(`Ежедневная миссия будет доступна через ${formatTime(dailyCooldown)}`, 'warning');
+                return;
+            }
+            
+            if (gameState.energy < 30) {
+                showNotification('Недостаточно энергии для ежедневной миссии!', 'danger');
+                return;
+            }
+            
+            gameState.lastDailyMission = now;
+            gameState.energy = Math.max(0, gameState.energy - 30);
+            
+            const expGained = 100 + (gameState.level * 10);
+            const cryptoGained = 100 + (gameState.level * 5);
+            
+            gameState.exp += expGained;
+            gameState.crypto = Math.max(0, gameState.crypto + cryptoGained);
+            gameState.completedMissions++;
+            gameState.totalEarned += cryptoGained;
+            gameState.stats.missionsCompleted++;
+            
+            showNotification(`✅ ЕЖЕДНЕВНАЯ МИССИЯ! +${expGained} опыта, +${cryptoGained} крипто`, 'success');
+            
+            // Check achievements
+            checkAchievements();
+            
+            updateDisplays();
+            saveGame();
+        }
+
+        // Render skills
+        function renderSkills() {
+            const skillsList = document.getElementById('skillsList');
+            skillsList.innerHTML = '';
+            
+            skills.forEach(skill => {
+                const currentLevel = gameState[skill.id] || 1;
+                const cost = skill.cost(currentLevel);
+                const canAfford = gameState.crypto >= cost && gameState.skillPoints > 0 && currentLevel < skill.maxLevel;
+                
+                const skillElement = document.createElement('div');
+                skillElement.className = 'upgrade-item';
+                skillElement.innerHTML = `
+                    <div class="upgrade-icon">
+                        <i class="fas ${skill.icon}"></i>
+                    </div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">${skill.name}</div>
+                        <div class="upgrade-desc">${skill.description}</div>
+                        <div class="upgrade-level">Уровень: ${currentLevel}/${skill.maxLevel}</div>
+                    </div>
+                    <div class="upgrade-cost ${!canAfford ? 'disabled' : ''}" onclick="${canAfford ? `upgradeSkill('${skill.id}')` : ''}">
+                        ${cost}💰
+                    </div>
+                `;
+                skillsList.appendChild(skillElement);
+            });
+        }
+
+        // Upgrade skill
+        function upgradeSkill(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            if (!skill) return;
+            
+            const currentLevel = gameState[skillId] || 1;
+            const cost = skill.cost(currentLevel);
+            
+            if (gameState.crypto < cost || gameState.skillPoints <= 0 || currentLevel >= skill.maxLevel) {
+                showNotification('Недостаточно ресурсов для улучшения или достигнут максимальный уровень!', 'danger');
+                return;
+            }
+            
+            gameState.crypto = Math.max(0, gameState.crypto - cost);
+            gameState.totalSpent += cost;
+            gameState[skillId] = currentLevel + 1;
+            gameState.skillPoints = Math.max(0, gameState.skillPoints - 1);
+            gameState.stats.skillsUpgraded++;
+            
+            showNotification(`✅ Навык "${skill.name}" улучшен до уровня ${gameState[skillId]}!`, 'success');
+            
+            // Check achievements
+            checkAchievements();
+            
+            updateDisplays();
+            renderSkills();
+            saveGame();
+        }
+
+        // Render equipment
+        function renderEquipment() {
+            const equipmentList = document.getElementById('equipmentList');
+            equipmentList.innerHTML = '';
+            
+            equipment.forEach(eq => {
+                const currentLevel = gameState.equipment[eq.id] ? gameState.equipment[eq.id].level : 0;
+                const isEquipped = gameState.equipment[eq.id] ? gameState.equipment[eq.id].equipped : false;
+                const cost = Math.floor(eq.baseCost * Math.pow(eq.costMultiplier, currentLevel));
+                const canAfford = gameState.crypto >= cost && currentLevel < eq.maxLevel;
+                
+                const equipmentElement = document.createElement('div');
+                equipmentElement.className = `equipment-item ${isEquipped ? 'equipped' : ''}`;
+                equipmentElement.innerHTML = `
+                    <div class="equipment-icon">
+                        <i class="fas ${eq.icon}"></i>
+                    </div>
+                    <div class="equipment-name">${eq.name}</div>
+                    <div class="equipment-stats">${eq.description}</div>
+                    <div class="equipment-level">Уровень: ${currentLevel}/${eq.maxLevel}</div>
+                    <div class="shop-price">
+                        <div class="price-tag">${cost}💰</div>
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="upgradeEquipment('${eq.id}')" ${!canAfford ? 'disabled' : ''}>
+                            Улучшить
+                        </button>
+                    </div>
+                `;
+                equipmentList.appendChild(equipmentElement);
+            });
+        }
+
+        // Upgrade equipment
+        function upgradeEquipment(equipmentId) {
+            const eq = equipment.find(e => e.id === equipmentId);
+            if (!eq) return;
+            
+            const currentLevel = gameState.equipment[equipmentId] ? gameState.equipment[equipmentId].level : 0;
+            const cost = Math.floor(eq.baseCost * Math.pow(eq.costMultiplier, currentLevel));
+            
+            if (gameState.crypto < cost || currentLevel >= eq.maxLevel) {
+                showNotification('Недостаточно ресурсов для улучшения или достигнут максимальный уровень!', 'danger');
+                return;
+            }
+            
+            gameState.crypto = Math.max(0, gameState.crypto - cost);
+            gameState.totalSpent += cost;
+            
+            if (!gameState.equipment[equipmentId]) {
+                gameState.equipment[equipmentId] = { level: 0, equipped: false };
+            }
+            
+            gameState.equipment[equipmentId].level++;
+            gameState.equipment[equipmentId].equipped = true;
+            gameState.stats.equipmentUpgraded++;
+            
+            showNotification(`✅ Оборудование "${eq.name}" улучшено до уровня ${gameState.equipment[equipmentId].level}!`, 'success');
+            
+            // Check achievements
+            checkAchievements();
+            
+            updateDisplays();
+            renderEquipment();
+            saveGame();
+        }
+
+        // Render shop
+        function renderShop() {
+            const shopItemsGrid = document.getElementById('shopItems');
+            shopItemsGrid.innerHTML = '';
+            
+            shopItems.forEach(item => {
+                const canAfford = gameState.crypto >= item.price;
+                const now = getMoscowTime().getTime();
+                const cooldown = gameState.itemCooldowns[item.id] || 0;
+                const isOnCooldown = cooldown > now;
+                
+                const shopItemElement = document.createElement('div');
+                shopItemElement.className = 'shop-item';
+                shopItemElement.innerHTML = `
+                    <div class="shop-icon">
+                        <i class="fas ${item.icon}"></i>
+                    </div>
+                    <div class="shop-name">${item.name}</div>
+                    <div class="shop-desc">${item.description}</div>
+                    <div class="shop-price">
+                        <div class="price-tag">${item.price}💰</div>
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;" onclick="buyItem('${item.id}')" ${!canAfford || isOnCooldown ? 'disabled' : ''}>
+                            ${isOnCooldown ? 'КД' : 'Купить'}
+                        </button>
+                    </div>
+                    ${isOnCooldown ? '<div class="cooldown-overlay"><div>ПЕРЕЗАРЯДКА</div></div>' : ''}
+                `;
+                shopItemsGrid.appendChild(shopItemElement);
+            });
+        }
+
+        // Buy item
+        function buyItem(itemId) {
+            const item = shopItems.find(i => i.id === itemId);
+            if (!item) return;
+            
+            const now = getMoscowTime().getTime();
+            const cooldown = gameState.itemCooldowns[itemId] || 0;
+            
+            if (cooldown > now) {
+                showNotification('Предмет еще на перезарядке!', 'warning');
+                return;
+            }
+            
+            if (gameState.crypto < item.price) {
+                showNotification('Недостаточно крипто для покупки!', 'danger');
+                return;
+            }
+            
+            gameState.crypto = Math.max(0, gameState.crypto - item.price);
+            gameState.totalSpent += item.price;
+            gameState.stats.itemsPurchased++;
+            
+            // Apply item effect
+            let message = `✅ Предмет "${item.name}" куплен!`;
+            
+            switch(item.effect) {
+                case "energy":
+                    gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + item.value);
+                    message += ` Восстановлено ${item.value} энергии.`;
+                    break;
+                case "cryptoBoost":
+                    // Implement crypto boost logic
+                    message += ` Активен бонус +${((item.value - 1) * 100)}% к крипто наградам.`;
+                    break;
+                case "expBoost":
+                    // Implement exp boost logic
+                    message += ` Активен бонус +${((item.value - 1) * 100)}% к опыту.`;
+                    break;
+                case "stealthBoost":
+                    // Implement stealth boost logic
+                    message += ` Активен бонус +${((item.value - 1) * 100)}% к stealth.`;
+                    break;
+                case "hackBoost":
+                    // Implement hack boost logic
+                    message += ` Активен бонус +${((item.value - 1) * 100)}% к взлому на ${item.uses} миссий.`;
+                    break;
+                case "autoSuccess":
+                    // Implement auto success logic
+                    message += ` Следующая миссия будет автоматически успешной.`;
+                    break;
+                case "randomBoost":
+                    // Implement random boost logic
+                    const randomStat = ["hack", "stealth", "analytics", "speed"][Math.floor(Math.random() * 4)];
+                    gameState[randomStat] += 1;
+                    message += ` Случайная характеристика увеличена!`;
+                    break;
+                case "speedBoost":
+                    // Implement speed boost logic
+                    message += ` Активен бонус скорости на ${item.duration / 60000} минут.`;
+                    break;
+                case "allBoost":
+                    // Implement all boost logic
+                    message += ` Активен бонус ко всем навыкам на ${item.duration / 60000} минут.`;
+                    break;
+                case "unlockMissions":
+                    // Implement unlock missions logic
+                    message += ` Открыт доступ к секретным миссиям!`;
+                    break;
+                case "maxEnergy":
+                    gameState.maxEnergy += item.value;
+                    gameState.energy = gameState.maxEnergy;
+                    message += ` Максимальная энергия увеличена на ${item.value}.`;
+                    break;
+                case "skillPoint":
+                    gameState.skillPoints += item.value;
+                    message += ` Получено ${item.value} очко навыков.`;
+                    break;
+                case "upgradePoint":
+                    gameState.upgradePoints += item.value;
+                    message += ` Получено ${item.value} очко улучшений.`;
+                    break;
+                case "inventory":
+                    // Implement inventory expansion logic
+                    message += ` Инвентарь расширен на ${item.value} слотов.`;
+                    break;
+                case "currency":
+                    if (item.id === "bitcoin") {
+                        gameState.bitcoins += item.value;
+                        message += ` Получен ${item.value} биткоин.`;
+                    } else if (item.id === "darkcoin") {
+                        gameState.darkcoins += item.value;
+                        message += ` Получен ${item.value} дарккоин.`;
+                    }
+                    break;
+                // Add more item effects as needed
+            }
+            
+            // Set cooldown for item
+            if (item.cooldown > 0) {
+                gameState.itemCooldowns[item.id] = now + item.cooldown;
+            }
+            
+            // Add to inventory if it's a permanent item
+            if (item.type === "permanent") {
+                gameState.inventory.push({
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    icon: item.icon
+                });
+            }
+            
+            showNotification(message, 'success');
+            
+            // Check achievements
+            checkAchievements();
+            
+            updateDisplays();
+            renderShop();
+            saveGame();
+        }
+
+        // Render inventory
+        function renderInventory() {
+            const inventoryGrid = document.getElementById('inventoryGrid');
+            const slotsUsed = gameState.inventory ? gameState.inventory.length : 0;
+            
+            document.getElementById('inventorySlots').textContent = `${slotsUsed}/50`;
+            
+            if (!gameState.inventory || gameState.inventory.length === 0) {
+                inventoryGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">Инвентарь пуст</div>';
+            } else {
+                // Render inventory items
+                inventoryGrid.innerHTML = '';
+                gameState.inventory.forEach((item, index) => {
+                    const now = getMoscowTime().getTime();
+                    const cooldown = gameState.itemCooldowns[item.id] || 0;
+                    const isOnCooldown = cooldown > now;
+                    
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'shop-item';
+                    itemElement.innerHTML = `
+                        <div class="shop-icon">
+                            <i class="fas ${item.icon}"></i>
+                        </div>
+                        <div class="shop-name">${item.name}</div>
+                        <div class="shop-desc">${item.description}</div>
+                        <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px; margin-top: 5px;" onclick="useItem(${index})" ${isOnCooldown ? 'disabled' : ''}>
+                            ${isOnCooldown ? 'КД' : 'Использовать'}
+                        </button>
+                        ${isOnCooldown ? '<div class="cooldown-overlay"><div>ПЕРЕЗАРЯДКА</div></div>' : ''}
+                    `;
+                    inventoryGrid.appendChild(itemElement);
+                });
+            }
+        }
+
+        // Use item from inventory
+        function useItem(index) {
+            const item = gameState.inventory[index];
+            if (!item) return;
+            
+            const shopItem = shopItems.find(i => i.id === item.id);
+            if (!shopItem) return;
+            
+            const now = getMoscowTime().getTime();
+            const cooldown = gameState.itemCooldowns[item.id] || 0;
+            
+            if (cooldown > now) {
+                showNotification('Предмет еще на перезарядке!', 'warning');
+                return;
+            }
+            
+            // Apply item effect
+            let message = `✅ Предмет "${item.name}" использован!`;
+            
+            switch(shopItem.effect) {
+                case "energy":
+                    gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + shopItem.value);
+                    message += ` Восстановлено ${shopItem.value} энергии.`;
+                    break;
+                case "cryptoBoost":
+                    // Implement crypto boost logic
+                    message += ` Активен бонус +${((shopItem.value - 1) * 100)}% к крипто наградам.`;
+                    break;
+                case "expBoost":
+                    // Implement exp boost logic
+                    message += ` Активен бонус +${((shopItem.value - 1) * 100)}% к опыту.`;
+                    break;
+                case "stealthBoost":
+                    // Implement stealth boost logic
+                    message += ` Активен бонус +${((shopItem.value - 1) * 100)}% к stealth.`;
+                    break;
+                case "hackBoost":
+                    // Implement hack boost logic
+                    message += ` Активен бонус +${((shopItem.value - 1) * 100)}% к взлому на ${shopItem.uses} миссий.`;
+                    break;
+                case "autoSuccess":
+                    // Implement auto success logic
+                    message += ` Следующая миссия будет автоматически успешной.`;
+                    break;
+                case "randomBoost":
+                    // Implement random boost logic
+                    const randomStat = ["hack", "stealth", "analytics", "speed"][Math.floor(Math.random() * 4)];
+                    gameState[randomStat] += 1;
+                    message += ` Случайная характеристика увеличена!`;
+                    break;
+                case "speedBoost":
+                    // Implement speed boost logic
+                    message += ` Активен бонус скорости на ${shopItem.duration / 60000} минут.`;
+                    break;
+                case "allBoost":
+                    // Implement all boost logic
+                    message += ` Активен бонус ко всем навыкам на ${shopItem.duration / 60000} минут.`;
+                    break;
+                // Add more item effects as needed
+            }
+            
+            // Set cooldown for item
+            if (shopItem.cooldown > 0) {
+                gameState.itemCooldowns[item.id] = now + shopItem.cooldown;
+            }
+            
+            // Remove from inventory if it's a consumable
+            if (shopItem.type === "consumable") {
+                gameState.inventory.splice(index, 1);
+            }
+            
+            showNotification(message, 'success');
+            
+            updateDisplays();
+            renderInventory();
+            saveGame();
+        }
+
+        // Render achievements
+        function renderAchievements() {
+            // Progress achievements
+            renderAchievementCategory('progress', achievements.progress);
+            renderAchievementCategory('missions', achievements.missions);
+            renderAchievementCategory('combat', achievements.combat);
+            renderAchievementCategory('economy', achievements.economy);
+            renderAchievementCategory('special', achievements.special);
+            
+            // Update achievement counts
+            updateAchievementCounts();
+        }
+
+        // Render achievement category
+        function renderAchievementCategory(category, achievementList) {
+            const grid = document.getElementById(`${category}AchievementsGrid`);
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            let completedCount = 0;
+            
+            achievementList.forEach(achievement => {
+                const progress = calculateAchievementProgress(achievement);
+                const isCompleted = progress >= achievement.goal;
+                const isClaimed = gameState.achievements[achievement.id] || false;
+                
+                if (isCompleted) completedCount++;
+                
+                const achievementElement = document.createElement('div');
+                achievementElement.className = `achievement-card ${isCompleted ? (isClaimed ? 'claimed' : '') : 'locked'}`;
+                achievementElement.innerHTML = `
+                    <div class="achievement-icon">
+                        <i class="fas ${achievement.icon}"></i>
+                    </div>
+                    <div class="achievement-name">${achievement.name}</div>
+                    <div class="achievement-desc">${achievement.description}</div>
+                    <div class="achievement-reward">Награда: ${achievement.reward.crypto}💰 + ${achievement.reward.skillPoints} очков</div>
+                    <div class="achievement-progress">
+                        <div class="achievement-progress-fill" style="width: ${Math.min(100, (progress / achievement.goal) * 100)}%"></div>
+                    </div>
+                    ${isCompleted && !isClaimed ? 
+                        `<button class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px; margin-top: 5px;" onclick="claimAchievement('${achievement.id}')">
+                            Забрать награду
+                        </button>` : 
+                        ''
+                    }
+                `;
+                grid.appendChild(achievementElement);
+            });
+            
+            // Update completed count
+            const countElement = document.getElementById(`${category}AchievementsCount`);
+            if (countElement) {
+                countElement.textContent = `${completedCount}/${achievementList.length}`;
+            }
+        }
+
+        // Calculate achievement progress
+        function calculateAchievementProgress(achievement) {
+            switch(achievement.type) {
+                case "level":
+                    return gameState.level;
+                case "skill":
+                    return Math.max(...Object.values(gameState).filter(val => typeof val === 'number' && val > 0 && val <= 50));
+                case "allSkills":
+                    const skillValues = Object.values(gameState).filter(val => typeof val === 'number' && val > 0 && val <= 50);
+                    return Math.min(...skillValues);
+                case "maxEnergy":
+                    return gameState.maxEnergy;
+                case "playTime":
+                    return gameState.stats.totalPlayTime;
+                case "loginDays":
+                    return gameState.stats.loginDays;
+                case "consecutiveSuccesses":
+                    return gameState.stats.consecutiveSuccesses;
+                case "totalEarned":
+                    return gameState.totalEarned;
+                case "missionsCompleted":
+                    return gameState.stats.missionsCompleted;
+                case "specialMissionsCompleted":
+                    return gameState.stats.specialMissionsCompleted;
+                case "eliteMissionsCompleted":
+                    return gameState.stats.eliteMissionsCompleted;
+                case "successfulHacks":
+                    return gameState.stats.successfulHacks;
+                case "failedHacks":
+                    return gameState.stats.failedHacks;
+                case "itemsCrafted":
+                    return gameState.stats.itemsCrafted;
+                case "itemsPurchased":
+                    return gameState.stats.itemsPurchased;
+                case "skillsUpgraded":
+                    return gameState.stats.skillsUpgraded;
+                case "equipmentUpgraded":
+                    return gameState.stats.equipmentUpgraded;
+                case "totalSpent":
+                    return gameState.totalSpent;
+                case "bitcoins":
+                    return gameState.bitcoins;
+                case "darkcoins":
+                    return gameState.darkcoins;
+                case "firstMission":
+                    return gameState.stats.missionsCompleted > 0 ? 1 : 0;
+                case "firstSpecial":
+                    return gameState.stats.specialMissionsCompleted > 0 ? 1 : 0;
+                case "firstElite":
+                    return gameState.stats.eliteMissionsCompleted > 0 ? 1 : 0;
+                case "firstDaily":
+                    // This would need to be tracked separately
+                    return 0;
+                case "firstCraft":
+                    return gameState.stats.itemsCrafted > 0 ? 1 : 0;
+                case "firstPurchase":
+                    return gameState.stats.itemsPurchased > 0 ? 1 : 0;
+                case "firstUpgrade":
+                    return gameState.stats.skillsUpgraded > 0 ? 1 : 0;
+                case "firstEquipment":
+                    return gameState.stats.equipmentUpgraded > 0 ? 1 : 0;
+                case "allAchievements":
+                    return Object.keys(gameState.achievements).length;
+                case "maxLevel":
+                    return gameState.level >= 100 ? 1 : 0;
+                case "maxSkills":
+                    // Check if all skills are at max level
+                    const skillMaxed = Object.values(gameState).filter(val => typeof val === 'number' && val > 0 && val <= 50);
+                    return skillMaxed.every(skill => skill >= 50) ? 1 : 0;
+                case "maxEquipment":
+                    // Check if all equipment is at max level
+                    const equipmentLevels = Object.values(gameState.equipment).map(eq => eq.level);
+                    const equipmentMaxed = equipment.every(eq => 
+                        gameState.equipment[eq.id] && gameState.equipment[eq.id].level >= eq.maxLevel
+                    );
+                    return equipmentMaxed ? 1 : 0;
+                case "completeGame":
+                    // This would need more complex logic
+                    return 0;
+                case "secret1":
+                case "secret2":
+                case "secret3":
+                case "secret4":
+                case "secret5":
+                case "community":
+                case "legend":
+                case "master":
+                case "guru":
+                case "wizard":
+                case "ninja":
+                case "phantom":
+                    // These would need special conditions
+                    return 0;
+                case "allRegularMissions":
+                    const regularMissions = missions.filter(m => m.category === "regular");
+                    return regularMissions.every(m => gameState.missionCooldowns[m.id] !== undefined) ? 1 : 0;
+                case "allSpecialMissions":
+                    const specialMissions = missions.filter(m => m.category === "special");
+                    return specialMissions.every(m => gameState.missionCooldowns[m.id] !== undefined) ? 1 : 0;
+                case "allEliteMissions":
+                    const eliteMissions = missions.filter(m => m.category === "elite");
+                    return eliteMissions.every(m => gameState.missionCooldowns[m.id] !== undefined) ? 1 : 0;
+                case "dailyMissions":
+                    // This would need to be tracked separately
+                    return 0;
+                case "reconMissions":
+                case "hackMissions":
+                case "stealMissions":
+                case "ddosMissions":
+                case "sabotageMissions":
+                case "phishingMissions":
+                case "miningMissions":
+                case "socialMissions":
+                case "spyMissions":
+                    // These would need to track specific mission types
+                    return 0;
+                default:
+                    return 0;
+            }
+        }
+
+        // Update achievement counts
+        function updateAchievementCounts() {
+            const totalAchievements = Object.values(achievements).flat().length;
+            const completedAchievements = Object.keys(gameState.achievements).length;
+            
+            // You could display this somewhere if needed
+        }
+
+        // Check achievements
+        function checkAchievements() {
+            let newAchievements = 0;
+            
+            // Check all achievements
+            Object.values(achievements).flat().forEach(achievement => {
+                const progress = calculateAchievementProgress(achievement);
+                const isCompleted = progress >= achievement.goal;
+                const isClaimed = gameState.achievements[achievement.id] || false;
+                
+                if (isCompleted && !isClaimed) {
+                    newAchievements++;
+                }
+            });
+            
+            if (newAchievements > 0) {
+                showNotification(`🎉 Доступно новых достижений: ${newAchievements}`, 'success');
+            }
+        }
+
+        // Claim achievement
+        function claimAchievement(achievementId) {
+            const achievement = Object.values(achievements).flat().find(a => a.id === achievementId);
+            if (!achievement) return;
+            
+            const progress = calculateAchievementProgress(achievement);
+            if (progress < achievement.goal) {
+                showNotification('Достижение еще не завершено!', 'warning');
+                return;
+            }
+            
+            if (gameState.achievements[achievementId]) {
+                showNotification('Награда за это достижение уже получена!', 'warning');
+                return;
+            }
+            
+            // Grant rewards
+            gameState.crypto += achievement.reward.crypto;
+            gameState.skillPoints += achievement.reward.skillPoints;
+            gameState.achievements[achievementId] = true;
+            
+            showNotification(`🎉 Достижение "${achievement.name}" завершено! Получено: ${achievement.reward.crypto}💰 + ${achievement.reward.skillPoints} очков навыков`, 'success');
+            
+            updateDisplays();
+            renderAchievements();
+            saveGame();
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            // Set color based on type
+            if (type === 'success') {
+                notification.style.borderColor = 'var(--success)';
+            } else if (type === 'danger') {
+                notification.style.borderColor = 'var(--danger)';
+            } else if (type === 'warning') {
+                notification.style.borderColor = 'var(--warning)';
+            }
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Initialize the game when page loads
+        window.onload = initGame;
+    </script>
 </body>
 </html>
